@@ -1311,6 +1311,11 @@ enum AcoreStrings
     // Continue show Ban in world (ip)
     LANG_BAN_IP_YOUBANNEDMESSAGE_WORLD            = 11017,
     LANG_BAN_IP_YOUPERMBANNEDMESSAGE_WORLD        = 11018,
+    LANG_RACHA_PARADA = 11990,
+    LANG_RACHA_ASESINO = 11991,
+    LANG_PRIMERA_SANGRE = 11992,
+    LANG_RACHA_SANACION = 11993,
+    LANG_RACHA_PARADA_SANACION = 11994,
 
     LANG_MUTED_PLAYER                             = 30000, // Mute for player 2 hour
 

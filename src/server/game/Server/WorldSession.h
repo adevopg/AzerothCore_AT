@@ -418,6 +418,7 @@ public:
     void SendTrainerList(ObjectGuid guid);
     void SendTrainerList(ObjectGuid guid, std::string const& strTitle);
     void SendListInventory(ObjectGuid guid, uint32 vendorEntry = 0);
+    void SendListInventory(uint64 guid, uint32 vendorEntry = 0);
     void SendShowBank(ObjectGuid guid);
     bool CanOpenMailBox(ObjectGuid guid);
     void SendShowMailBox(ObjectGuid guid);

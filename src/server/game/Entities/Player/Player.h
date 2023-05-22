@@ -1346,7 +1346,7 @@ public:
     void SendNewItem(Item* item, uint32 count, bool received, bool created, bool broadcast = false, bool sendChatMessage = true);
     bool BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uint32 item, uint8 count, uint8 bag, uint8 slot);
     bool _StoreOrEquipNewItem(uint32 vendorslot, uint32 item, uint8 count, uint8 bag, uint8 slot, int32 price, ItemTemplate const* pProto, Creature* pVendor, VendorItem const* crItem, bool bStore);
-
+    bool _StoreOrEquipNewItem(uint32 vendorslot, uint32 item, uint8 count, uint8 bag, uint8 slot, int32 price, ItemTemplate const* pProto, Item* itemk, VendorItem const* crItem, bool bStore); //CUSTOM ITEM COMPRA
     [[nodiscard]] float GetReputationPriceDiscount(Creature const* creature) const;
     [[nodiscard]] float GetReputationPriceDiscount(FactionTemplateEntry const* factionTemplate) const;
 
