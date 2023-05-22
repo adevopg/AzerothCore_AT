@@ -118,5 +118,6 @@
     },
     "deno.enable": true,
     "deno.path": "deps/deno/bin/deno",
-    "deno.lint": true
+    "deno.lint": true,
+    "C_Cpp.errorSquiggles": "disabled"
 }
