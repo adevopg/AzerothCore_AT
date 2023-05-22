@@ -1,5 +1,5 @@
 /*******************************************************************************************
-* Créditos: Khanx & Ray                                                                    *
+* CrÃ©ditos: Khanx & Ray                                                                    *
 ********************************************************************************************/
 #include "ScriptPCH.h"
 
@@ -10,16 +10,16 @@ public:
  
     bool OnGossipHello(Player* player, Creature* creature)
     {
-		if (player->GetSession()->GetSecurity() >= 249 && player->isGameMaster())
-			player->ADD_GOSSIP_ITEM(3, "|CFFFF0000Aprender TODO (Solo GMs)|R", GOSSIP_SENDER_MAIN, 10);
-		player->ADD_GOSSIP_ITEM(3, "Habilidades de Clase, Armas y Equitacion", GOSSIP_SENDER_MAIN, GOSSIP_OPTION_TRAINER);
+		if (player->GetSession()->GetSecurity() >= 249 && player->IsGameMaster())
+			AddGossipItemFor(player,3, "|CFFFF0000Aprender TODO (Solo GMs)|R", GOSSIP_SENDER_MAIN, 10);
+		AddGossipItemFor(player,3, "Habilidades de Clase, Armas y Equitacion", GOSSIP_SENDER_MAIN, GOSSIP_OPTION_TRAINER);
 		if(player->GetSpecsCount() == 1 && !(player->getLevel() < sWorld->getIntConfig(CONFIG_MIN_DUALSPEC_LEVEL)))
-			player->ADD_GOSSIP_ITEM(3, "Aprender doble especializacion de talentos", GOSSIP_SENDER_MAIN, GOSSIP_OPTION_LEARNDUALSPEC);
-		player->ADD_GOSSIP_ITEM(1, "Reiniciar mis puntos de talento", GOSSIP_SENDER_MAIN, GOSSIP_OPTION_UNLEARNTALENTS);
+			AddGossipItemFor(player,3, "Aprender doble especializacion de talentos", GOSSIP_SENDER_MAIN, GOSSIP_OPTION_LEARNDUALSPEC);
+		AddGossipItemFor(player,1, "Reiniciar mis puntos de talento", GOSSIP_SENDER_MAIN, GOSSIP_OPTION_UNLEARNTALENTS);
 		if(player->getClass() == CLASS_HUNTER && player->GetPet())
-			player->ADD_GOSSIP_ITEM(1, "Reiniciar talentos de mi mascota", GOSSIP_SENDER_MAIN, GOSSIP_OPTION_UNLEARNPETTALENTS);
-		player->ADD_GOSSIP_ITEM(2, "Olvidalo", GOSSIP_SENDER_MAIN, GOSSIP_OPTION_NONE);
-		player->SEND_GOSSIP_MENU(1, creature->GetGUID());
+			AddGossipItemFor(player,1, "Reiniciar talentos de mi mascota", GOSSIP_SENDER_MAIN, GOSSIP_OPTION_UNLEARNPETTALENTS);
+		AddGossipItemFor(player,2, "Olvidalo", GOSSIP_SENDER_MAIN, GOSSIP_OPTION_NONE);
+		SendGossipMenuFor(player, 1, creature->GetGUID());
         return true;
     }
  
@@ -30,7 +30,7 @@ public:
         {
 			case 10:	//Solo GM
 			{
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 				player->CastSpell(player, 63680, true, NULL, NULL, player->GetGUID());
 				player->CastSpell(player, 63624, true, NULL, NULL, player->GetGUID());
 				player->learnSpell(355, false);
@@ -1070,13 +1070,13 @@ public:
 				player->learnSpell(61191, false);
 				player->GetSession()->SendAreaTriggerMessage("Habilidades aprendidas");
 				player->UpdateSkillsToMaxSkillsForLevel();
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 			}
 			break;
 			
 			case GOSSIP_OPTION_LEARNDUALSPEC:
 			{
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 				player->CastSpell(player, 63680, true, NULL, NULL, player->GetGUID());
 				player->CastSpell(player, 63624, true, NULL, NULL, player->GetGUID());
 				player->GetSession()->SendAreaTriggerMessage("Doble especializacion aprendida");
@@ -1084,7 +1084,7 @@ public:
 
 			case GOSSIP_OPTION_UNLEARNTALENTS:
 			{
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 				player->resetTalents(true);
 				player->SendTalentsInfoData(false);
 				player->GetSession()->SendAreaTriggerMessage("Talentos reiniciados");
@@ -1094,11 +1094,11 @@ public:
 			{
 			player->ResetPetTalents();
 			player->GetSession()->SendAreaTriggerMessage("Talentos de tu mascota reiniciados");
-			player->CLOSE_GOSSIP_MENU();
+			CloseGossipMenuFor(player);
 			}break;
 
 			case GOSSIP_OPTION_NONE: //Menu de "Olvidalo"
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 			break;
 
 			case GOSSIP_OPTION_TRAINER: // Class Trainers
@@ -1106,69 +1106,69 @@ public:
 			if(player->getClass() == CLASS_WARRIOR)
 			{
 
-				player->ADD_GOSSIP_ITEM( 5, "Habilidades de Guerrero", GOSSIP_SENDER_MAIN, 101);
+				AddGossipItemFor(player, 5, "Habilidades de Guerrero", GOSSIP_SENDER_MAIN, 101);
 			}
 
 			if(player->getClass() == CLASS_DEATH_KNIGHT)
 			{
 
-				player->ADD_GOSSIP_ITEM( 5, "Habilidades de Caballero de la Muerte", GOSSIP_SENDER_MAIN, 102);
+				AddGossipItemFor(player, 5, "Habilidades de Caballero de la Muerte", GOSSIP_SENDER_MAIN, 102);
 			}
 
 			if(player->getClass() == CLASS_DRUID)
 			{
 
-				player->ADD_GOSSIP_ITEM( 5, "Habilidades de Druida", GOSSIP_SENDER_MAIN, 103);
+				AddGossipItemFor(player, 5, "Habilidades de Druida", GOSSIP_SENDER_MAIN, 103);
 			}
 
 			if(player->getClass() == CLASS_HUNTER)
 			{
 
-				player->ADD_GOSSIP_ITEM( 5, "Habilidades de Cazador", GOSSIP_SENDER_MAIN, 104);
+				AddGossipItemFor(player, 5, "Habilidades de Cazador", GOSSIP_SENDER_MAIN, 104);
 			}
 
 			if(player->getClass() == CLASS_MAGE)
 			{
 
-				player->ADD_GOSSIP_ITEM( 5, "Habilidades de Mago", GOSSIP_SENDER_MAIN, 105);
+				AddGossipItemFor(player, 5, "Habilidades de Mago", GOSSIP_SENDER_MAIN, 105);
 			}
 
 			if(player->getClass() == CLASS_PALADIN)
 			{
 
-				player->ADD_GOSSIP_ITEM( 5, "Habilidades de Paladin", GOSSIP_SENDER_MAIN, 106);
+				AddGossipItemFor(player, 5, "Habilidades de Paladin", GOSSIP_SENDER_MAIN, 106);
 			}
 
 			if(player->getClass() == CLASS_PRIEST)
 			{
 
-				player->ADD_GOSSIP_ITEM( 5, "Habilidades de Sacerdote", GOSSIP_SENDER_MAIN, 107);
+				AddGossipItemFor(player, 5, "Habilidades de Sacerdote", GOSSIP_SENDER_MAIN, 107);
 			}
 
 			if(player->getClass() == CLASS_ROGUE)
 			{
 
-				player->ADD_GOSSIP_ITEM( 5, "Habilidades de Picaro", GOSSIP_SENDER_MAIN, 108);
+				AddGossipItemFor(player, 5, "Habilidades de Picaro", GOSSIP_SENDER_MAIN, 108);
 			}
 
 			if(player->getClass() == CLASS_SHAMAN)
 			{
 
-				player->ADD_GOSSIP_ITEM( 5, "Habilidades de Chaman", GOSSIP_SENDER_MAIN, 109);
+				AddGossipItemFor(player, 5, "Habilidades de Chaman", GOSSIP_SENDER_MAIN, 109);
 			}
 
 			if(player->getClass() == CLASS_WARLOCK)
 			{
 
-				player->ADD_GOSSIP_ITEM( 5, "Habilidades de Brujo", GOSSIP_SENDER_MAIN, 110);
+				AddGossipItemFor(player, 5, "Habilidades de Brujo", GOSSIP_SENDER_MAIN, 110);
 			}
-				player->SEND_GOSSIP_MENU(1, creature->GetGUID());
+				SendGossipMenuFor(player, 1, creature->GetGUID());
 				}break;
 
 
 			case 101:	//Warrior Spells Trainer 914
 			{
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 			
 				player->learnSpell(355, false);
 				player->learnSpell(33388, false);
@@ -1319,13 +1319,13 @@ public:
 				player->learnSpell(11608, false);
 				player->GetSession()->SendAreaTriggerMessage("Habilidades aprendidas");
 				player->UpdateSkillsToMaxSkillsForLevel();
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 			}
 			break;
 		 
 			case 102: //Death Knight Spells Trainer 28474
 			{
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 				player->learnSpell(48778, false);
 				player->learnSpell(49998, false);
 				player->learnSpell(50977, false);
@@ -1406,7 +1406,7 @@ public:
 				player->learnSpell(49940, false);
 				player->GetSession()->SendAreaTriggerMessage("Habilidades aprendidas");
 				player->UpdateSkillsToMaxSkillsForLevel();
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 			}
 			break;
 
@@ -1701,7 +1701,7 @@ public:
 				player->learnSpell(8925, false);
 				player->GetSession()->SendAreaTriggerMessage("Habilidades aprendidas");
 				player->UpdateSkillsToMaxSkillsForLevel();
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 			}
 			break;
 
@@ -1878,13 +1878,13 @@ public:
 				player->learnSpell(13553, false);
 				player->GetSession()->SendAreaTriggerMessage("Habilidades aprendidas");
 				player->UpdateSkillsToMaxSkillsForLevel();
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 			}
 			break;
 				
 			case 105:	// Mage Spells Trainer 28958
 			{
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 				player->learnSpell(33944, false);
 				player->learnSpell(227, false);
 				player->learnSpell(1180, false);
@@ -2134,13 +2134,13 @@ public:
 				player->learnSpell(8427, false);
 				player->GetSession()->SendAreaTriggerMessage("Habilidades aprendidas");
 				player->UpdateSkillsToMaxSkillsForLevel();
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 			}
 			break;
 				
 			case 106:	// Paladin Spells Trainer 23128
 			{
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 				player->learnSpell(465, false);
 				player->learnSpell(200, false);
 				player->learnSpell(33388, false);
@@ -2278,7 +2278,7 @@ public:
 				player->learnSpell(31801, false);
 				player->learnSpell(31884, false);
 				player->learnSpell(32223, false);
-				if (player->GetTeam() == HORDE)
+				if (player->GetTeamId() == HORDE)
 				{
 					player->learnSpell(34767, false);
 					player->learnSpell(34769, false);
@@ -2328,13 +2328,13 @@ public:
 				player->learnSpell(62124, false);
 				player->GetSession()->SendAreaTriggerMessage("Habilidades aprendidas");
 				player->UpdateSkillsToMaxSkillsForLevel();
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 			}
 			break;
 				
 			case 107: // Priest Spells Trainer 4090
 			{
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 				player->learnSpell(17, false);
 				player->learnSpell(227, false);
 				player->learnSpell(1180, false);
@@ -2551,13 +2551,13 @@ public:
 				player->learnSpell(64901, false);
 				player->GetSession()->SendAreaTriggerMessage("Habilidades aprendidas");
 				player->UpdateSkillsToMaxSkillsForLevel();
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 			}
 			break;
 				
 			case 108:	// Rogue Spells Trainer 4584
 			{
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 				player->learnSpell(53, false);
 				player->learnSpell(674, false);
 				player->learnSpell(2567, false);
@@ -2689,13 +2689,13 @@ public:
 				player->learnSpell(57993, false);
 				player->GetSession()->SendAreaTriggerMessage("Habilidades aprendidas");
 				player->UpdateSkillsToMaxSkillsForLevel();
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 			}
 			break;
 				
 			case 109: // Shaman Spells Trainer 17204
 			{
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 				player->learnSpell(131, false);
 				player->learnSpell(15590, false);
 				player->learnSpell(227, false);
@@ -2890,9 +2890,9 @@ public:
 				player->learnSpell(25574, false);
 				player->learnSpell(25590, false);
 				player->learnSpell(29228, false);
-				if (player->GetTeam() == ALLIANCE)
+				if (player->GetTeamId() == ALLIANCE)
 				player->learnSpell(32182, false);
-				if (player->GetTeam() == HORDE)
+				if (player->GetTeamId() == HORDE)
 				player->learnSpell(2825, false);
 				player->learnSpell(33736, false);
 				player->learnSpell(36936, false);
@@ -2975,13 +2975,13 @@ public:
 				player->learnSpell(66844, false);
 				player->GetSession()->SendAreaTriggerMessage("Habilidades aprendidas");
 				player->UpdateSkillsToMaxSkillsForLevel();
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 			}
 			break;
 				
 			case 110: // Warlock Spells Trainer 23534
 			{
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 				player->learnSpell(126, false);
 				player->learnSpell(33388, false);
 				player->learnSpell(33391, false);
@@ -3209,7 +3209,7 @@ public:
 				player->learnSpell(61191, false);
 				player->GetSession()->SendAreaTriggerMessage("Habilidades aprendidas");
 				player->UpdateSkillsToMaxSkillsForLevel();
-				player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
 			}
 			break;
         }
