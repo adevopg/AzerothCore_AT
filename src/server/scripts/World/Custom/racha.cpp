@@ -19,8 +19,8 @@ CREATE TABLE `racha_sanacion` (
 En /src/server/game/Server/Protocol/Handlers/CharacterHandler.cpp:
 1- Buscar void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
 2- Añadir:
-	CharacterDatabase.PExecute("DELETE FROM racha WHERE guid='%u'", pCurrChar->GetGUID());
-	CharacterDatabase.PExecute("DELETE FROM racha_sanacion WHERE guid='%u'", pCurrChar->GetGUID());
+	CharacterDatabase.PExecute("DELETE FROM racha WHERE guid='%u'", pCurrChar->GetGUID().GetRawValue());
+	CharacterDatabase.PExecute("DELETE FROM racha_sanacion WHERE guid='%u'", pCurrChar->GetGUID().GetRawValue());
 */
 /*
 Nota: Para acabar la racha de muertes al salir de BG:
@@ -28,8 +28,8 @@ Nota: Para acabar la racha de muertes al salir de BG:
 1- Abrir: /src/server/game/Maps/Map.cpp
 2- Buscar: BattlegroundMap::Remove
 3- Añadir: 
-	QueryResult limpiar = CharacterDatabase.Query("DELETE FROM racha  WHERE guid='%u'", player->GetGUID());
-	QueryResult limpiar = CharacterDatabase.Query("DELETE FROM racha_sanacion  WHERE guid='%u'", player->GetGUID());
+	QueryResult limpiar = CharacterDatabase.Query("DELETE FROM racha  WHERE guid='%u'", player->GetGUID().GetRawValue());
+	QueryResult limpiar = CharacterDatabase.Query("DELETE FROM racha_sanacion  WHERE guid='%u'", player->GetGUID().GetRawValue());
 */
 #include "ScriptPCH.h"
 #include "Language.h"
@@ -106,17 +106,17 @@ class Racha_de_Muertes : public PlayerScript
 				Battleground* bg = healer->GetBattleground();
 				if (!bg || bg->Is1vs1())
 				{
-					//QueryResult limpiar = CharacterDatabase.Query("DELETE FROM racha WHERE guid='%u'", healer->GetGUID());
+					//QueryResult limpiar = CharacterDatabase.Query("DELETE FROM racha WHERE guid='%u'", healer->GetGUID().GetRawValue());
 					return;
 				}
 			
 				int32 sanacion = Getsanacion(healer);
 				int32 sanacion2 = Getsanacion2(healer);
 				if (sanacion == 0) //Si el healer lleva 0 de sanacion -> Se hace un replace (como insert into)
-					QueryResult inicio = CharacterDatabase.Query("REPLACE INTO racha_sanacion(guid, sanacion, sanacion2) VALUES ('%u', '%u', 1)", healer->GetGUID(), healAmount);
+					QueryResult inicio = CharacterDatabase.Query("REPLACE INTO racha_sanacion(guid, sanacion, sanacion2) VALUES ('%u', '%u', 1)", healer->GetGUID().GetRawValue(), healAmount);
 				else	//Si el healer lleva algo de sanacion, se hace un update sumando la cantidad
 				{
-					QueryResult inicio = CharacterDatabase.Query("UPDATE racha_sanacion SET sanacion = sanacion+'%u' WHERE guid='%u'", healAmount, healer->GetGUID());
+					QueryResult inicio = CharacterDatabase.Query("UPDATE racha_sanacion SET sanacion = sanacion+'%u' WHERE guid='%u'", healAmount, healer->GetGUID().GetRawValue());
 						sanacion++;
 				}
 
@@ -156,7 +156,7 @@ class Racha_de_Muertes : public PlayerScript
 					healer->ModifyHonorPoints(+2500);
 					ChatHandler(healer->GetSession()).PSendSysMessage("Has obtenido |CFF87CEFA2500|r puntos de Honor EXTRA por tu racha de sanacion de %u.", sanacion);
 					bg->SendWarningToAll(LANG_RACHA_SANACION, icono_healer, color_healer, healer->GetName(), sanacion);
-					QueryResult inicio = CharacterDatabase.Query("UPDATE racha_sanacion SET sanacion2 = sanacion2+1 WHERE guid='%u'", healer->GetGUID());
+					QueryResult inicio = CharacterDatabase.Query("UPDATE racha_sanacion SET sanacion2 = sanacion2+1 WHERE guid='%u'", healer->GetGUID().GetRawValue());
 				}
 
 				if(sanacion>=250000 && sanacion2==2)
@@ -164,7 +164,7 @@ class Racha_de_Muertes : public PlayerScript
 					healer->ModifyHonorPoints(+4000);
 					ChatHandler(healer->GetSession()).PSendSysMessage("Has obtenido |CFF87CEFA4000|r puntos de Honor EXTRA por tu racha de sanacion de %u.", sanacion);
 					bg->SendWarningToAll(LANG_RACHA_SANACION, icono_healer, color_healer, healer->GetName(), sanacion);
-					QueryResult inicio = CharacterDatabase.Query("UPDATE racha_sanacion SET sanacion2 = sanacion2+1 WHERE guid='%u'", healer->GetGUID());
+					QueryResult inicio = CharacterDatabase.Query("UPDATE racha_sanacion SET sanacion2 = sanacion2+1 WHERE guid='%u'", healer->GetGUID().GetRawValue());
 				}
 
 				if(sanacion>=400000 && sanacion2==3)
@@ -172,7 +172,7 @@ class Racha_de_Muertes : public PlayerScript
 					healer->ModifyHonorPoints(+6500);
 					ChatHandler(healer->GetSession()).PSendSysMessage("Has obtenido |CFF87CEFA6500|r puntos de Honor EXTRA por tu racha de sanacion de %u.", sanacion);
 					bg->SendWarningToAll(LANG_RACHA_SANACION, icono_healer, color_healer, healer->GetName(), sanacion);
-					QueryResult inicio = CharacterDatabase.Query("UPDATE racha_sanacion SET sanacion2 = sanacion2+1 WHERE guid='%u'", healer->GetGUID());
+					QueryResult inicio = CharacterDatabase.Query("UPDATE racha_sanacion SET sanacion2 = sanacion2+1 WHERE guid='%u'", healer->GetGUID().GetRawValue());
 				}
 
 				if(sanacion>=570000 && sanacion2==4)
@@ -180,7 +180,7 @@ class Racha_de_Muertes : public PlayerScript
 					healer->ModifyHonorPoints(+9000);
 					ChatHandler(healer->GetSession()).PSendSysMessage("Has obtenido |CFF87CEFA9000|r puntos de Honor EXTRA por tu racha de sanacion de %u.", sanacion);
 					bg->SendWarningToAll(LANG_RACHA_SANACION, icono_healer, color_healer, healer->GetName(), sanacion);
-					QueryResult inicio = CharacterDatabase.Query("UPDATE racha_sanacion SET sanacion2 = sanacion2+1 WHERE guid='%u'", healer->GetGUID());
+					QueryResult inicio = CharacterDatabase.Query("UPDATE racha_sanacion SET sanacion2 = sanacion2+1 WHERE guid='%u'", healer->GetGUID().GetRawValue());
 				}
 				
 				if(sanacion>=760000 && sanacion2==5)
@@ -188,7 +188,7 @@ class Racha_de_Muertes : public PlayerScript
 					healer->ModifyHonorPoints(+12000);
 					ChatHandler(healer->GetSession()).PSendSysMessage("Has obtenido |CFF87CEFA12000|r puntos de Honor EXTRA por tu racha de sanacion de %u.", sanacion);
 					bg->SendWarningToAll(LANG_RACHA_SANACION, icono_healer, color_healer, healer->GetName(), sanacion);
-					QueryResult inicio = CharacterDatabase.Query("UPDATE racha_sanacion SET sanacion2 = sanacion2+1 WHERE guid='%u'", healer->GetGUID());
+					QueryResult inicio = CharacterDatabase.Query("UPDATE racha_sanacion SET sanacion2 = sanacion2+1 WHERE guid='%u'", healer->GetGUID().GetRawValue());
 				}
 			}
         }
@@ -199,14 +199,14 @@ class Racha_de_Muertes : public PlayerScript
 			Battleground* bg = asesino->GetBattleground();
 			if (!bg || bg->Is1vs1())
 			{
-				//QueryResult limpiar = CharacterDatabase.Query("DELETE FROM racha WHERE guid='%u'", muerto->GetGUID());
+				//QueryResult limpiar = CharacterDatabase.Query("DELETE FROM racha WHERE guid='%u'", muerto->GetGUID().GetRawValue());
 				return;
 			}
 
 			if (asesino == muerto) //Suicidarse no aumenta la cantidad de asesinatos
 			{
-				QueryResult limpiar = CharacterDatabase.Query("DELETE FROM racha WHERE guid='%u'", muerto->GetGUID());
-				QueryResult limpiar2 = CharacterDatabase.Query("DELETE FROM racha_sanacion WHERE guid='%u'", muerto->GetGUID());
+				QueryResult limpiar = CharacterDatabase.Query("DELETE FROM racha WHERE guid='%u'", muerto->GetGUID().GetRawValue());
+				QueryResult limpiar2 = CharacterDatabase.Query("DELETE FROM racha_sanacion WHERE guid='%u'", muerto->GetGUID().GetRawValue());
 				return;
 			}
 
@@ -277,17 +277,17 @@ class Racha_de_Muertes : public PlayerScript
 			int32 sanacion2 = Getsanacion2(muerto);	//Calculamos el numero sanacion2 para mayor comprobacion al matar a alguien en racha
 
 			if (muertes == 0) //Si el asesino lleva 0 muertes -> Se hace un replace (como insert into)
-				QueryResult inicio = CharacterDatabase.Query("REPLACE INTO racha(guid, muertes) VALUES ('%u', 1)", asesino->GetGUID());
+				QueryResult inicio = CharacterDatabase.Query("REPLACE INTO racha(guid, muertes) VALUES ('%u', 1)", asesino->GetGUID().GetRawValue());
 			else	//Si el asesino lleva alguna muerte, se hace un update sumando una muerte más
 			{
-				QueryResult inicio = CharacterDatabase.Query("UPDATE racha SET muertes = muertes+1 WHERE guid='%u'", asesino->GetGUID());
+				QueryResult inicio = CharacterDatabase.Query("UPDATE racha SET muertes = muertes+1 WHERE guid='%u'", asesino->GetGUID().GetRawValue());
 					muertes++;
 			}
 
 			if (muertes2>0 || sanacion>0)	//Si el que es asesinado tiene alguna muerte se le borran
 			{
-				QueryResult limpiar = CharacterDatabase.Query("DELETE FROM racha WHERE guid='%u'", muerto->GetGUID());
-				QueryResult limpiar2 = CharacterDatabase.Query("DELETE FROM racha_sanacion WHERE guid='%u'", muerto->GetGUID());
+				QueryResult limpiar = CharacterDatabase.Query("DELETE FROM racha WHERE guid='%u'", muerto->GetGUID().GetRawValue());
+				QueryResult limpiar2 = CharacterDatabase.Query("DELETE FROM racha_sanacion WHERE guid='%u'", muerto->GetGUID().GetRawValue());
 			}
 	
 			if (muertes2>=5 && muertes2<=9)	//Si el que es asesinado está en una racha de muertes, se premia al asesino	
@@ -356,11 +356,11 @@ class Racha_de_Muertes : public PlayerScript
 		}
 		void OnPlayerLogin(Player* player)
 		{
-			CharacterDatabase.Execute("DELETE FROM racha WHERE guid='%u'", player->GetGUID());
+			CharacterDatabase.Execute("DELETE FROM racha WHERE guid='%u'", player->GetGUID().GetRawValue());
 		}
 		void OnPlayerLogout(Player* player)
 		{
-			CharacterDatabase.Execute("DELETE FROM racha WHERE guid='%u'", player->GetGUID());
+			CharacterDatabase.Execute("DELETE FROM racha WHERE guid='%u'", player->GetGUID().GetRawValue());
 		}
 		 
 };

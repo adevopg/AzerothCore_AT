@@ -1491,6 +1491,8 @@ void World::LoadConfigSettings(bool reload)
     _bool_configs[CONFIG_ARENA_1V1_VENDOR_RATING] = sConfigMgr->GetOption<bool>("Arena.1v1.VendorRating", false);
     _float_configs[CONFIG_ARENA_1V1_ARENAPOINTS_MULTI] = sConfigMgr->GetOption<float>("Arena.1v1.ArenaPointsMulti", 0.64f);
     _bool_configs[CONFIG_ARENA_1V1_BLOCK_FORBIDDEN_TALENTS] = sConfigMgr->GetOption<bool>("Arena.1v1.BlockForbiddenTalents", true);
+    
+    
 
     // call ScriptMgr if we're reloading the configuration
     sScriptMgr->OnAfterConfigLoad(reload);
