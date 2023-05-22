@@ -136,7 +136,7 @@ void Enchant(Player* player, Item* item, uint32 enchantid)
     if (!enchantid)
     {
         player->GetSession()->SendNotification("Algo fue mal en el codigo. Sera enviado a los desarrolladores y se revisara, sentimos las molestias.");
-        sLog->outError("enchant_vendor::Enchant: Enchant NPC 'enchantid' esta vacio, algo ha fallado");
+        LOG_ERROR("enchant_vendor", "enchant_vendor::Enchant: Enchant NPC 'enchantid' esta vacio, algo ha fallado");
         return;
     }
                
@@ -165,27 +165,27 @@ public:
  
         bool OnGossipHello(Player* player, Creature* creature)
         {
-            player->ADD_GOSSIP_ITEM(3, "Encantar Mano Principal", GOSSIP_SENDER_MAIN, 1);
-            player->ADD_GOSSIP_ITEM(3, "Encantar Mano Secundaria", GOSSIP_SENDER_MAIN, 13);
-            player->ADD_GOSSIP_ITEM(3, "Encantar Arma de Dos Manos", GOSSIP_SENDER_MAIN, 2);
-            player->ADD_GOSSIP_ITEM(3, "Encantar Escudo", GOSSIP_SENDER_MAIN, 3);
-            player->ADD_GOSSIP_ITEM(3, "Encantar Cabeza", GOSSIP_SENDER_MAIN, 4);
-            player->ADD_GOSSIP_ITEM(3, "Encantar Hombreras", GOSSIP_SENDER_MAIN, 5);
-            player->ADD_GOSSIP_ITEM(3, "Encantar Capa", GOSSIP_SENDER_MAIN, 6);
-            player->ADD_GOSSIP_ITEM(3, "Encantar Pechera", GOSSIP_SENDER_MAIN, 7);
-            player->ADD_GOSSIP_ITEM(3, "Encantar Brazales", GOSSIP_SENDER_MAIN, 8);
-            player->ADD_GOSSIP_ITEM(3, "Encantar Guantes", GOSSIP_SENDER_MAIN, 9);
-            player->ADD_GOSSIP_ITEM(3, "Encantar Piernas", GOSSIP_SENDER_MAIN, 10);
-            player->ADD_GOSSIP_ITEM(3, "Encantar Botas", GOSSIP_SENDER_MAIN, 11);
-			//player->ADD_GOSSIP_ITEM(3, "Encantar Cinturon", GOSSIP_SENDER_MAIN, 15);
+            AddGossipItemFor(player, 3, "Encantar Mano Principal", GOSSIP_SENDER_MAIN, 1);
+            AddGossipItemFor(player, 3, "Encantar Mano Secundaria", GOSSIP_SENDER_MAIN, 13);
+            AddGossipItemFor(player, 3, "Encantar Arma de Dos Manos", GOSSIP_SENDER_MAIN, 2);
+            AddGossipItemFor(player, 3, "Encantar Escudo", GOSSIP_SENDER_MAIN, 3);
+            AddGossipItemFor(player, 3, "Encantar Cabeza", GOSSIP_SENDER_MAIN, 4);
+            AddGossipItemFor(player, 3, "Encantar Hombreras", GOSSIP_SENDER_MAIN, 5);
+            AddGossipItemFor(player, 3, "Encantar Capa", GOSSIP_SENDER_MAIN, 6);
+            AddGossipItemFor(player, 3, "Encantar Pechera", GOSSIP_SENDER_MAIN, 7);
+            AddGossipItemFor(player, 3, "Encantar Brazales", GOSSIP_SENDER_MAIN, 8);
+            AddGossipItemFor(player, 3, "Encantar Guantes", GOSSIP_SENDER_MAIN, 9);
+            AddGossipItemFor(player, 3, "Encantar Piernas", GOSSIP_SENDER_MAIN, 10);
+            AddGossipItemFor(player, 3, "Encantar Botas", GOSSIP_SENDER_MAIN, 11);
+			//AddGossipItemFor(player, 3, "Encantar Cinturon", GOSSIP_SENDER_MAIN, 15);
 			
  
             if (player->HasSkill(SKILL_ENCHANTING) && player->GetSkillValue(SKILL_ENCHANTING) == 450)
                         {
-                player->ADD_GOSSIP_ITEM(3, "Encantar Anillos", GOSSIP_SENDER_MAIN, 12);
+                AddGossipItemFor(player, 3, "Encantar Anillos", GOSSIP_SENDER_MAIN, 12);
                         }
-                        //player->ADD_GOSSIP_ITEM(5, "Deseo remover mi encantamiento", GOSSIP_SENDER_MAIN, 14);
-						player->ADD_GOSSIP_ITEM(2, "Olvidalo.", GOSSIP_SENDER_MAIN, 350);
+                        //AddGossipItemFor(player, 5, "Deseo remover mi encantamiento", GOSSIP_SENDER_MAIN, 14);
+						AddGossipItemFor(player, 2, "Olvidalo.", GOSSIP_SENDER_MAIN, 350);
             player->PlayerTalkClass->SendGossipMenu(100001, creature->GetGUID());
                         return true;
                 }
@@ -201,23 +201,23 @@ public:
                 case 1: // Enchant WeAPon
                     if (player->HasSkill(SKILL_ENCHANTING) && player->GetSkillValue(SKILL_ENCHANTING) == 450)
                     {
-                        player->ADD_GOSSIP_ITEM(9, "Amparo de hojas", GOSSIP_SENDER_MAIN, 102);
-                        player->ADD_GOSSIP_ITEM(9, "Drenador de sangre", GOSSIP_SENDER_MAIN, 103);
+                        AddGossipItemFor(player, 9, "Amparo de hojas", GOSSIP_SENDER_MAIN, 102);
+                        AddGossipItemFor(player, 9, "Drenador de sangre", GOSSIP_SENDER_MAIN, 103);
                     }
-                    player->ADD_GOSSIP_ITEM(9, "Agilidad Excepcional", GOSSIP_SENDER_MAIN, 100);
-                    player->ADD_GOSSIP_ITEM(9, "Espiritu Excepcional", GOSSIP_SENDER_MAIN, 101);
-                    player->ADD_GOSSIP_ITEM(9, "Rabia", GOSSIP_SENDER_MAIN, 104);
-                    player->ADD_GOSSIP_ITEM(9, "Precision", GOSSIP_SENDER_MAIN, 105);
-                    player->ADD_GOSSIP_ITEM(9, "Magia Negra", GOSSIP_SENDER_MAIN, 106);
-                    player->ADD_GOSSIP_ITEM(9, "Maestro de Batalla", GOSSIP_SENDER_MAIN, 107);
-                    player->ADD_GOSSIP_ITEM(9, "Rompehielo", GOSSIP_SENDER_MAIN, 108);
-                    player->ADD_GOSSIP_ITEM(9, "Resguardo de vida", GOSSIP_SENDER_MAIN, 109);
-                    player->ADD_GOSSIP_ITEM(9, "Guardia Titan", GOSSIP_SENDER_MAIN, 110);
-                    player->ADD_GOSSIP_ITEM(9, "Potencia Superior", GOSSIP_SENDER_MAIN, 111);
-                    player->ADD_GOSSIP_ITEM(9, "Poder con Hechizos Poderoso", GOSSIP_SENDER_MAIN, 112);
-                    player->ADD_GOSSIP_ITEM(9, "Mangosta", GOSSIP_SENDER_MAIN, 113);
-                    player->ADD_GOSSIP_ITEM(9, "Verdugo", GOSSIP_SENDER_MAIN, 114);
-                                        player->ADD_GOSSIP_ITEM(2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
+                    AddGossipItemFor(player, 9, "Agilidad Excepcional", GOSSIP_SENDER_MAIN, 100);
+                    AddGossipItemFor(player, 9, "Espiritu Excepcional", GOSSIP_SENDER_MAIN, 101);
+                    AddGossipItemFor(player, 9, "Rabia", GOSSIP_SENDER_MAIN, 104);
+                    AddGossipItemFor(player, 9, "Precision", GOSSIP_SENDER_MAIN, 105);
+                    AddGossipItemFor(player, 9, "Magia Negra", GOSSIP_SENDER_MAIN, 106);
+                    AddGossipItemFor(player, 9, "Maestro de Batalla", GOSSIP_SENDER_MAIN, 107);
+                    AddGossipItemFor(player, 9, "Rompehielo", GOSSIP_SENDER_MAIN, 108);
+                    AddGossipItemFor(player, 9, "Resguardo de vida", GOSSIP_SENDER_MAIN, 109);
+                    AddGossipItemFor(player, 9, "Guardia Titan", GOSSIP_SENDER_MAIN, 110);
+                    AddGossipItemFor(player, 9, "Potencia Superior", GOSSIP_SENDER_MAIN, 111);
+                    AddGossipItemFor(player, 9, "Poder con Hechizos Poderoso", GOSSIP_SENDER_MAIN, 112);
+                    AddGossipItemFor(player, 9, "Mangosta", GOSSIP_SENDER_MAIN, 113);
+                    AddGossipItemFor(player, 9, "Verdugo", GOSSIP_SENDER_MAIN, 114);
+                                        AddGossipItemFor(player, 2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
                     player->PlayerTalkClass->SendGossipMenu(100002, creature->GetGUID());
                                         return true;
                                         break;
@@ -235,13 +235,13 @@ public:
  
                                                 if (item->GetTemplate()->InventoryType == INVTYPE_2HWEAPON)
                                                 {
-                                                        player->ADD_GOSSIP_ITEM(9, "Rabia", GOSSIP_SENDER_MAIN, 104);
-                                                        player->ADD_GOSSIP_ITEM(9, "Poder con Hechizos superior", GOSSIP_SENDER_MAIN, 115);
-                                                        player->ADD_GOSSIP_ITEM(9, "Agilidad Sublime", GOSSIP_SENDER_MAIN, 116);
-                                                        player->ADD_GOSSIP_ITEM(9, "Masacre", GOSSIP_SENDER_MAIN, 117);
-                                                        player->ADD_GOSSIP_ITEM(9, "Mangosta", GOSSIP_SENDER_MAIN, 113);
-                                                        player->ADD_GOSSIP_ITEM(9, "Verdugo", GOSSIP_SENDER_MAIN, 114);
-                                                        player->ADD_GOSSIP_ITEM(2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
+                                                        AddGossipItemFor(player, 9, "Rabia", GOSSIP_SENDER_MAIN, 104);
+                                                        AddGossipItemFor(player, 9, "Poder con Hechizos superior", GOSSIP_SENDER_MAIN, 115);
+                                                        AddGossipItemFor(player, 9, "Agilidad Sublime", GOSSIP_SENDER_MAIN, 116);
+                                                        AddGossipItemFor(player, 9, "Masacre", GOSSIP_SENDER_MAIN, 117);
+                                                        AddGossipItemFor(player, 9, "Mangosta", GOSSIP_SENDER_MAIN, 113);
+                                                        AddGossipItemFor(player, 9, "Verdugo", GOSSIP_SENDER_MAIN, 114);
+                                                        AddGossipItemFor(player, 2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
                                                         player->PlayerTalkClass->SendGossipMenu(100003, creature->GetGUID());
                                                         return true;
                                                 }
@@ -266,13 +266,13 @@ public:
  
                                                 if (item->GetTemplate()->InventoryType == INVTYPE_SHIELD)
                                                 {
-                                                        player->ADD_GOSSIP_ITEM(9, "+20 Defensa", GOSSIP_SENDER_MAIN, 118);
-                                                        player->ADD_GOSSIP_ITEM(9, "+25 Intelecto", GOSSIP_SENDER_MAIN, 119);
-                                                        player->ADD_GOSSIP_ITEM(9, "+20 Temple", GOSSIP_SENDER_MAIN, 120);
-                                                        player->ADD_GOSSIP_ITEM(9, "Blindaje de titanio", GOSSIP_SENDER_MAIN, 121);
-                                                        player->ADD_GOSSIP_ITEM(9, "+40 Aguante", GOSSIP_SENDER_MAIN, 122);
-                                                        player->ADD_GOSSIP_ITEM(9, "+36 Valor de Bloqueo", GOSSIP_SENDER_MAIN, 123);
-                                                        player->ADD_GOSSIP_ITEM(2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
+                                                        AddGossipItemFor(player, 9, "+20 Defensa", GOSSIP_SENDER_MAIN, 118);
+                                                        AddGossipItemFor(player, 9, "+25 Intelecto", GOSSIP_SENDER_MAIN, 119);
+                                                        AddGossipItemFor(player, 9, "+20 Temple", GOSSIP_SENDER_MAIN, 120);
+                                                        AddGossipItemFor(player, 9, "Blindaje de titanio", GOSSIP_SENDER_MAIN, 121);
+                                                        AddGossipItemFor(player, 9, "+40 Aguante", GOSSIP_SENDER_MAIN, 122);
+                                                        AddGossipItemFor(player, 9, "+36 Valor de Bloqueo", GOSSIP_SENDER_MAIN, 123);
+                                                        AddGossipItemFor(player, 2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
                                                         player->PlayerTalkClass->SendGossipMenu(100004, creature->GetGUID());
                                                         return true;
                                                 }
@@ -285,19 +285,19 @@ public:
                                         break;
  
                 case 4: // Enchant Head
-                    player->ADD_GOSSIP_ITEM(9, "+30 SP y 10 MP5", GOSSIP_SENDER_MAIN, 124);
-                    player->ADD_GOSSIP_ITEM(9, "+30 SP y 20 Critico", GOSSIP_SENDER_MAIN, 125);
-                    player->ADD_GOSSIP_ITEM(9, "+29 SP y 20 Temple", GOSSIP_SENDER_MAIN, 126);
-                    player->ADD_GOSSIP_ITEM(9, "+30 Aguante y 25 Temple", GOSSIP_SENDER_MAIN, 127);
-                    player->ADD_GOSSIP_ITEM(9, "+37 Aguante y 20 Defensa", GOSSIP_SENDER_MAIN, 128);
-                    player->ADD_GOSSIP_ITEM(9, "+50 AP y 20 Critico", GOSSIP_SENDER_MAIN, 129);
-                    player->ADD_GOSSIP_ITEM(9, "+50 AP y 20 Temple", GOSSIP_SENDER_MAIN, 130);
-                                        //player->ADD_GOSSIP_ITEM(9, "Arcanum de la Luna Eclipsada", GOSSIP_SENDER_MAIN, 131);
-                                        //player->ADD_GOSSIP_ITEM(9, "Arcanum del alma de la llama", GOSSIP_SENDER_MAIN, 132);
-                                        //player->ADD_GOSSIP_ITEM(9, "Arcanum de la sombra huida", GOSSIP_SENDER_MAIN, 133);
-                                        //player->ADD_GOSSIP_ITEM(9, "Arcanum del alma helada", GOSSIP_SENDER_MAIN, 134);
-                                        //player->ADD_GOSSIP_ITEM(9, "Arcanum de amparo toxico", GOSSIP_SENDER_MAIN, 135);
-                                        player->ADD_GOSSIP_ITEM(2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
+                    AddGossipItemFor(player, 9, "+30 SP y 10 MP5", GOSSIP_SENDER_MAIN, 124);
+                    AddGossipItemFor(player, 9, "+30 SP y 20 Critico", GOSSIP_SENDER_MAIN, 125);
+                    AddGossipItemFor(player, 9, "+29 SP y 20 Temple", GOSSIP_SENDER_MAIN, 126);
+                    AddGossipItemFor(player, 9, "+30 Aguante y 25 Temple", GOSSIP_SENDER_MAIN, 127);
+                    AddGossipItemFor(player, 9, "+37 Aguante y 20 Defensa", GOSSIP_SENDER_MAIN, 128);
+                    AddGossipItemFor(player, 9, "+50 AP y 20 Critico", GOSSIP_SENDER_MAIN, 129);
+                    AddGossipItemFor(player, 9, "+50 AP y 20 Temple", GOSSIP_SENDER_MAIN, 130);
+                                        //AddGossipItemFor(player, 9, "Arcanum de la Luna Eclipsada", GOSSIP_SENDER_MAIN, 131);
+                                        //AddGossipItemFor(player, 9, "Arcanum del alma de la llama", GOSSIP_SENDER_MAIN, 132);
+                                        //AddGossipItemFor(player, 9, "Arcanum de la sombra huida", GOSSIP_SENDER_MAIN, 133);
+                                        //AddGossipItemFor(player, 9, "Arcanum del alma helada", GOSSIP_SENDER_MAIN, 134);
+                                        //AddGossipItemFor(player, 9, "Arcanum de amparo toxico", GOSSIP_SENDER_MAIN, 135);
+                                        AddGossipItemFor(player, 2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
                     player->PlayerTalkClass->SendGossipMenu(100005, creature->GetGUID());
                                         return true;
                                         break;
@@ -305,118 +305,118 @@ public:
                 case 5: // Enchant Shoulders
                     if (player->HasSkill(SKILL_INSCRIPTION) && player->GetSkillValue(SKILL_INSCRIPTION) == 450)
                     {
-                        player->ADD_GOSSIP_ITEM(9, "+120 AP y 15 Critico", GOSSIP_SENDER_MAIN, 136);
-                        player->ADD_GOSSIP_ITEM(9, "+70 SP y 8 MP5", GOSSIP_SENDER_MAIN, 137);
-                        player->ADD_GOSSIP_ITEM(9, "+70 Esquivar y 15 Defensa", GOSSIP_SENDER_MAIN, 138);
-                        player->ADD_GOSSIP_ITEM(9, "+70 SP y 15 Critico", GOSSIP_SENDER_MAIN, 139);
+                        AddGossipItemFor(player, 9, "+120 AP y 15 Critico", GOSSIP_SENDER_MAIN, 136);
+                        AddGossipItemFor(player, 9, "+70 SP y 8 MP5", GOSSIP_SENDER_MAIN, 137);
+                        AddGossipItemFor(player, 9, "+70 Esquivar y 15 Defensa", GOSSIP_SENDER_MAIN, 138);
+                        AddGossipItemFor(player, 9, "+70 SP y 15 Critico", GOSSIP_SENDER_MAIN, 139);
                     }
-                    player->ADD_GOSSIP_ITEM(9, "+40 AP y 15 Critico", GOSSIP_SENDER_MAIN, 140);
-                    player->ADD_GOSSIP_ITEM(9, "+24 SP y 8 MP5", GOSSIP_SENDER_MAIN, 141);
-                    player->ADD_GOSSIP_ITEM(9, "+30 Aguante y 15 Temple", GOSSIP_SENDER_MAIN, 142);
-                    player->ADD_GOSSIP_ITEM(9, "+20 Esquivar y 15 Defensa", GOSSIP_SENDER_MAIN, 143);
-                    player->ADD_GOSSIP_ITEM(9, "+24 SP y 15 Critico", GOSSIP_SENDER_MAIN, 144);
-                    player->ADD_GOSSIP_ITEM(9, "+23 SP y 15 Temple", GOSSIP_SENDER_MAIN, 145);
-                    player->ADD_GOSSIP_ITEM(9, "+40 AP y 15 Temple", GOSSIP_SENDER_MAIN, 146);
-                                        player->ADD_GOSSIP_ITEM(2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
+                    AddGossipItemFor(player, 9, "+40 AP y 15 Critico", GOSSIP_SENDER_MAIN, 140);
+                    AddGossipItemFor(player, 9, "+24 SP y 8 MP5", GOSSIP_SENDER_MAIN, 141);
+                    AddGossipItemFor(player, 9, "+30 Aguante y 15 Temple", GOSSIP_SENDER_MAIN, 142);
+                    AddGossipItemFor(player, 9, "+20 Esquivar y 15 Defensa", GOSSIP_SENDER_MAIN, 143);
+                    AddGossipItemFor(player, 9, "+24 SP y 15 Critico", GOSSIP_SENDER_MAIN, 144);
+                    AddGossipItemFor(player, 9, "+23 SP y 15 Temple", GOSSIP_SENDER_MAIN, 145);
+                    AddGossipItemFor(player, 9, "+40 AP y 15 Temple", GOSSIP_SENDER_MAIN, 146);
+                                        AddGossipItemFor(player, 2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
                     player->PlayerTalkClass->SendGossipMenu(100006, creature->GetGUID());
                                         return true;
                                         break;
  
                 case 6: // Enchant Cloak
-                    //player->ADD_GOSSIP_ITEM(9, "Tejido aracnido elastico", GOSSIP_SENDER_MAIN, 147);
-                    player->ADD_GOSSIP_ITEM(9, "+10 Agilidad y Sigilo aumentado", GOSSIP_SENDER_MAIN, 148);                    
-                    player->ADD_GOSSIP_ITEM(9, "Bordado de resplandor oscuro", GOSSIP_SENDER_MAIN, 149);
-                    player->ADD_GOSSIP_ITEM(9, "Bordado de tejido de luz", GOSSIP_SENDER_MAIN, 150);
-                    player->ADD_GOSSIP_ITEM(9, "Bordado de guardia de espada", GOSSIP_SENDER_MAIN, 151);                    
-                    player->ADD_GOSSIP_ITEM(9, "+10 Espiritu y 2% Amenaza", GOSSIP_SENDER_MAIN, 152);
-                    player->ADD_GOSSIP_ITEM(9, "+16 Indice de Defensa", GOSSIP_SENDER_MAIN, 153);
-                    player->ADD_GOSSIP_ITEM(9, "+35 Penetracion de hechizos", GOSSIP_SENDER_MAIN, 154);
-                    player->ADD_GOSSIP_ITEM(9, "+225 Armadura", GOSSIP_SENDER_MAIN, 155);
-                    player->ADD_GOSSIP_ITEM(9, "+22 Agilidad", GOSSIP_SENDER_MAIN, 156);
-                    player->ADD_GOSSIP_ITEM(9, "+23 Indice de Celeridad", GOSSIP_SENDER_MAIN, 157);
-                                        player->ADD_GOSSIP_ITEM(2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
+                    //AddGossipItemFor(player, 9, "Tejido aracnido elastico", GOSSIP_SENDER_MAIN, 147);
+                    AddGossipItemFor(player, 9, "+10 Agilidad y Sigilo aumentado", GOSSIP_SENDER_MAIN, 148);                    
+                    AddGossipItemFor(player, 9, "Bordado de resplandor oscuro", GOSSIP_SENDER_MAIN, 149);
+                    AddGossipItemFor(player, 9, "Bordado de tejido de luz", GOSSIP_SENDER_MAIN, 150);
+                    AddGossipItemFor(player, 9, "Bordado de guardia de espada", GOSSIP_SENDER_MAIN, 151);                    
+                    AddGossipItemFor(player, 9, "+10 Espiritu y 2% Amenaza", GOSSIP_SENDER_MAIN, 152);
+                    AddGossipItemFor(player, 9, "+16 Indice de Defensa", GOSSIP_SENDER_MAIN, 153);
+                    AddGossipItemFor(player, 9, "+35 Penetracion de hechizos", GOSSIP_SENDER_MAIN, 154);
+                    AddGossipItemFor(player, 9, "+225 Armadura", GOSSIP_SENDER_MAIN, 155);
+                    AddGossipItemFor(player, 9, "+22 Agilidad", GOSSIP_SENDER_MAIN, 156);
+                    AddGossipItemFor(player, 9, "+23 Indice de Celeridad", GOSSIP_SENDER_MAIN, 157);
+                                        AddGossipItemFor(player, 2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
                     player->PlayerTalkClass->SendGossipMenu(100007, creature->GetGUID());
                                         return true;
                                         break;
  
                                 case 7: //Enchant chest
-                                        player->ADD_GOSSIP_ITEM(9, "+10 Todas las estadisticas", GOSSIP_SENDER_MAIN, 158);
-                                        player->ADD_GOSSIP_ITEM(9, "+275 Puntos de salud", GOSSIP_SENDER_MAIN, 159);
-                                        player->ADD_GOSSIP_ITEM(9, "+10 MP5", GOSSIP_SENDER_MAIN, 160);
-                                        player->ADD_GOSSIP_ITEM(9, "+20 Temple", GOSSIP_SENDER_MAIN, 161);
-                                        player->ADD_GOSSIP_ITEM(9, "+20 Indice de Defensa", GOSSIP_SENDER_MAIN, 162);
-                                        player->ADD_GOSSIP_ITEM(2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
+                                        AddGossipItemFor(player, 9, "+10 Todas las estadisticas", GOSSIP_SENDER_MAIN, 158);
+                                        AddGossipItemFor(player, 9, "+275 Puntos de salud", GOSSIP_SENDER_MAIN, 159);
+                                        AddGossipItemFor(player, 9, "+10 MP5", GOSSIP_SENDER_MAIN, 160);
+                                        AddGossipItemFor(player, 9, "+20 Temple", GOSSIP_SENDER_MAIN, 161);
+                                        AddGossipItemFor(player, 9, "+20 Indice de Defensa", GOSSIP_SENDER_MAIN, 162);
+                                        AddGossipItemFor(player, 2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
                                         player->PlayerTalkClass->SendGossipMenu(100008, creature->GetGUID());
                                         return true;
                                         break;
  
                                 case 8: //Enchant Bracers
-                                        player->ADD_GOSSIP_ITEM(9, "+40 Aguante", GOSSIP_SENDER_MAIN, 163);
-                                        player->ADD_GOSSIP_ITEM(9, "+30 Poder con hechizos", GOSSIP_SENDER_MAIN, 164);
-                                        player->ADD_GOSSIP_ITEM(9, "+50 Poder de ataque", GOSSIP_SENDER_MAIN, 165);
-                                        player->ADD_GOSSIP_ITEM(9, "+18 Espiritu", GOSSIP_SENDER_MAIN, 166);
-                                        player->ADD_GOSSIP_ITEM(9, "+15 Pericia", GOSSIP_SENDER_MAIN, 167);
-                                        player->ADD_GOSSIP_ITEM(9, "+6 Todas las estadisticas", GOSSIP_SENDER_MAIN, 168);
-                                        player->ADD_GOSSIP_ITEM(9, "+16 Intelecto", GOSSIP_SENDER_MAIN, 169);
-                                        //player->ADD_GOSSIP_ITEM(9, "Forro de pelaje de resistencia a lo Arcano", GOSSIP_SENDER_MAIN, 170);
-                                        //player->ADD_GOSSIP_ITEM(9, "Forro de pelaje de resistencia al Fuego", GOSSIP_SENDER_MAIN, 171);
-                                        //player->ADD_GOSSIP_ITEM(9, "Forro de pelaje de resistencia al Hielo", GOSSIP_SENDER_MAIN, 172);
-                                        //player->ADD_GOSSIP_ITEM(9, "Forro de pelaje de resistencia a la Naturaleza", GOSSIP_SENDER_MAIN, 173);
-                                        //player->ADD_GOSSIP_ITEM(9, "Forro de pelaje de resistencia a las Sombras", GOSSIP_SENDER_MAIN, 174);
-                                        player->ADD_GOSSIP_ITEM(9, "Forro de pelaje de Poder de Ataque", GOSSIP_SENDER_MAIN, 175);
-                                        player->ADD_GOSSIP_ITEM(9, "Forro de pelaje de Aguante", GOSSIP_SENDER_MAIN, 176);
-                                        player->ADD_GOSSIP_ITEM(9, "Forro de pelaje de Poder con Hechizos", GOSSIP_SENDER_MAIN, 177);
-                                        player->ADD_GOSSIP_ITEM(2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
+                                        AddGossipItemFor(player, 9, "+40 Aguante", GOSSIP_SENDER_MAIN, 163);
+                                        AddGossipItemFor(player, 9, "+30 Poder con hechizos", GOSSIP_SENDER_MAIN, 164);
+                                        AddGossipItemFor(player, 9, "+50 Poder de ataque", GOSSIP_SENDER_MAIN, 165);
+                                        AddGossipItemFor(player, 9, "+18 Espiritu", GOSSIP_SENDER_MAIN, 166);
+                                        AddGossipItemFor(player, 9, "+15 Pericia", GOSSIP_SENDER_MAIN, 167);
+                                        AddGossipItemFor(player, 9, "+6 Todas las estadisticas", GOSSIP_SENDER_MAIN, 168);
+                                        AddGossipItemFor(player, 9, "+16 Intelecto", GOSSIP_SENDER_MAIN, 169);
+                                        //AddGossipItemFor(player, 9, "Forro de pelaje de resistencia a lo Arcano", GOSSIP_SENDER_MAIN, 170);
+                                        //AddGossipItemFor(player, 9, "Forro de pelaje de resistencia al Fuego", GOSSIP_SENDER_MAIN, 171);
+                                        //AddGossipItemFor(player, 9, "Forro de pelaje de resistencia al Hielo", GOSSIP_SENDER_MAIN, 172);
+                                        //AddGossipItemFor(player, 9, "Forro de pelaje de resistencia a la Naturaleza", GOSSIP_SENDER_MAIN, 173);
+                                        //AddGossipItemFor(player, 9, "Forro de pelaje de resistencia a las Sombras", GOSSIP_SENDER_MAIN, 174);
+                                        AddGossipItemFor(player, 9, "Forro de pelaje de Poder de Ataque", GOSSIP_SENDER_MAIN, 175);
+                                        AddGossipItemFor(player, 9, "Forro de pelaje de Aguante", GOSSIP_SENDER_MAIN, 176);
+                                        AddGossipItemFor(player, 9, "Forro de pelaje de Poder con Hechizos", GOSSIP_SENDER_MAIN, 177);
+                                        AddGossipItemFor(player, 2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
                                         player->PlayerTalkClass->SendGossipMenu(100009, creature->GetGUID());
                                         return true;
                                         break;
  
                                 case 9: //Enchant Gloves
-                                        player->ADD_GOSSIP_ITEM(9, "+16 Critico", GOSSIP_SENDER_MAIN, 178);
-                                        player->ADD_GOSSIP_ITEM(9, "+16 Indice de Parada", GOSSIP_SENDER_MAIN, 179);
-                                        player->ADD_GOSSIP_ITEM(9, "+44 Poder de ataque", GOSSIP_SENDER_MAIN, 180);
-                                        player->ADD_GOSSIP_ITEM(9, "+20 Agilidad", GOSSIP_SENDER_MAIN, 181);
-                                        player->ADD_GOSSIP_ITEM(9, "+20 Indice de golpe", GOSSIP_SENDER_MAIN, 182);
-                                        player->ADD_GOSSIP_ITEM(9, "+15 Indice de Pericia", GOSSIP_SENDER_MAIN, 183);
-										player->ADD_GOSSIP_ITEM(9, "+28 Poder con hechizos", GOSSIP_SENDER_MAIN, 221);
-										//player->ADD_GOSSIP_ITEM(9, "Aceleradores de hipervelocidad", GOSSIP_SENDER_MAIN, 200);
-										player->ADD_GOSSIP_ITEM(9, "Cincha de armadura reticulada", GOSSIP_SENDER_MAIN, 201);
-										//player->ADD_GOSSIP_ITEM(9, "Pirocohete manual", GOSSIP_SENDER_MAIN, 199);
-                                        player->ADD_GOSSIP_ITEM(2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
+                                        AddGossipItemFor(player, 9, "+16 Critico", GOSSIP_SENDER_MAIN, 178);
+                                        AddGossipItemFor(player, 9, "+16 Indice de Parada", GOSSIP_SENDER_MAIN, 179);
+                                        AddGossipItemFor(player, 9, "+44 Poder de ataque", GOSSIP_SENDER_MAIN, 180);
+                                        AddGossipItemFor(player, 9, "+20 Agilidad", GOSSIP_SENDER_MAIN, 181);
+                                        AddGossipItemFor(player, 9, "+20 Indice de golpe", GOSSIP_SENDER_MAIN, 182);
+                                        AddGossipItemFor(player, 9, "+15 Indice de Pericia", GOSSIP_SENDER_MAIN, 183);
+										AddGossipItemFor(player, 9, "+28 Poder con hechizos", GOSSIP_SENDER_MAIN, 221);
+										//AddGossipItemFor(player, 9, "Aceleradores de hipervelocidad", GOSSIP_SENDER_MAIN, 200);
+										AddGossipItemFor(player, 9, "Cincha de armadura reticulada", GOSSIP_SENDER_MAIN, 201);
+										//AddGossipItemFor(player, 9, "Pirocohete manual", GOSSIP_SENDER_MAIN, 199);
+                                        AddGossipItemFor(player, 2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
                                         player->PlayerTalkClass->SendGossipMenu(100010, creature->GetGUID());
                                         return true;
                                         break;
  
                                 case 10: //Enchant legs
-                                        player->ADD_GOSSIP_ITEM(9, "+40 Temple y 28 Aguante", GOSSIP_SENDER_MAIN, 184);
-                                        player->ADD_GOSSIP_ITEM(9, "+55 Aguante y 22 Agilidad", GOSSIP_SENDER_MAIN, 185);
-                                        player->ADD_GOSSIP_ITEM(9, "+75 AP y 22 Critico", GOSSIP_SENDER_MAIN, 186);
-                                        player->ADD_GOSSIP_ITEM(9, "+50 SP y 20 Espiritu", GOSSIP_SENDER_MAIN, 187);
-                                        player->ADD_GOSSIP_ITEM(9, "+50 SP y 30 Aguante", GOSSIP_SENDER_MAIN, 188);
-                                        player->ADD_GOSSIP_ITEM(2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
+                                        AddGossipItemFor(player, 9, "+40 Temple y 28 Aguante", GOSSIP_SENDER_MAIN, 184);
+                                        AddGossipItemFor(player, 9, "+55 Aguante y 22 Agilidad", GOSSIP_SENDER_MAIN, 185);
+                                        AddGossipItemFor(player, 9, "+75 AP y 22 Critico", GOSSIP_SENDER_MAIN, 186);
+                                        AddGossipItemFor(player, 9, "+50 SP y 20 Espiritu", GOSSIP_SENDER_MAIN, 187);
+                                        AddGossipItemFor(player, 9, "+50 SP y 30 Aguante", GOSSIP_SENDER_MAIN, 188);
+                                        AddGossipItemFor(player, 2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
                                         player->PlayerTalkClass->SendGossipMenu(100011, creature->GetGUID());
                                         return true;
                                         break;
  
                                 case 11: //Enchant feet
-                                        player->ADD_GOSSIP_ITEM(9, "+32 Poder de ataque", GOSSIP_SENDER_MAIN, 191);
-                                        player->ADD_GOSSIP_ITEM(9, "+18 Aguante y Velocidad aumentada", GOSSIP_SENDER_MAIN, 192);
-                                        player->ADD_GOSSIP_ITEM(9, "+16 Agilidad", GOSSIP_SENDER_MAIN, 193);
-                                        player->ADD_GOSSIP_ITEM(9, "+18 Espiritu", GOSSIP_SENDER_MAIN, 194);
-                                        player->ADD_GOSSIP_ITEM(9, "+7 MP5", GOSSIP_SENDER_MAIN, 195);
-                                        player->ADD_GOSSIP_ITEM(9, "+12 Indice de golpe y 12 Critico", GOSSIP_SENDER_MAIN, 196);
-                                        player->ADD_GOSSIP_ITEM(9, "+22 Aguante", GOSSIP_SENDER_MAIN, 197);
-                                        //player->ADD_GOSSIP_ITEM(9, "Propulsiones de nitro", GOSSIP_SENDER_MAIN, 198);
-                                        player->ADD_GOSSIP_ITEM(2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
+                                        AddGossipItemFor(player, 9, "+32 Poder de ataque", GOSSIP_SENDER_MAIN, 191);
+                                        AddGossipItemFor(player, 9, "+18 Aguante y Velocidad aumentada", GOSSIP_SENDER_MAIN, 192);
+                                        AddGossipItemFor(player, 9, "+16 Agilidad", GOSSIP_SENDER_MAIN, 193);
+                                        AddGossipItemFor(player, 9, "+18 Espiritu", GOSSIP_SENDER_MAIN, 194);
+                                        AddGossipItemFor(player, 9, "+7 MP5", GOSSIP_SENDER_MAIN, 195);
+                                        AddGossipItemFor(player, 9, "+12 Indice de golpe y 12 Critico", GOSSIP_SENDER_MAIN, 196);
+                                        AddGossipItemFor(player, 9, "+22 Aguante", GOSSIP_SENDER_MAIN, 197);
+                                        //AddGossipItemFor(player, 9, "Propulsiones de nitro", GOSSIP_SENDER_MAIN, 198);
+                                        AddGossipItemFor(player, 2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
                                         player->PlayerTalkClass->SendGossipMenu(100012, creature->GetGUID());
                                         return true;
                                         break;
  
                                 case 12: //Enchant rings
-                                        player->ADD_GOSSIP_ITEM(9, "Asalto", GOSSIP_SENDER_MAIN, 202);
-                                        player->ADD_GOSSIP_ITEM(9, "Poder con hechizos superior", GOSSIP_SENDER_MAIN, 203);
-                                        player->ADD_GOSSIP_ITEM(9, "Aguante", GOSSIP_SENDER_MAIN, 204);
-                                        player->ADD_GOSSIP_ITEM(2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
+                                        AddGossipItemFor(player, 9, "Asalto", GOSSIP_SENDER_MAIN, 202);
+                                        AddGossipItemFor(player, 9, "Poder con hechizos superior", GOSSIP_SENDER_MAIN, 203);
+                                        AddGossipItemFor(player, 9, "Aguante", GOSSIP_SENDER_MAIN, 204);
+                                        AddGossipItemFor(player, 2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
                                         player->PlayerTalkClass->SendGossipMenu(100013, creature->GetGUID());
                                         return true;
                                         break;
@@ -434,22 +434,22 @@ public:
  
                                                 if (item->GetTemplate()->InventoryType == INVTYPE_WEAPONOFFHAND || item->GetTemplate()->InventoryType == INVTYPE_WEAPON)
                                                 {
-                                                        player->ADD_GOSSIP_ITEM(9, "Amparo de hojas", GOSSIP_SENDER_MAIN, 205);
-                                                        player->ADD_GOSSIP_ITEM(9, "Drenador de sangre", GOSSIP_SENDER_MAIN, 219);
-                                                        player->ADD_GOSSIP_ITEM(9, "Agilidad Excepcional", GOSSIP_SENDER_MAIN, 206);
-                                                        player->ADD_GOSSIP_ITEM(9, "Espiritu Excepcional", GOSSIP_SENDER_MAIN, 207);
-                                                        player->ADD_GOSSIP_ITEM(9, "Rabia", GOSSIP_SENDER_MAIN, 208);
-                                                        player->ADD_GOSSIP_ITEM(9, "Precision", GOSSIP_SENDER_MAIN, 209);
-                                                        player->ADD_GOSSIP_ITEM(9, "Magia Negra", GOSSIP_SENDER_MAIN, 210);
-                                                        player->ADD_GOSSIP_ITEM(9, "Maestro de Batalla", GOSSIP_SENDER_MAIN, 211);
-                                                        player->ADD_GOSSIP_ITEM(9, "Rompehielo", GOSSIP_SENDER_MAIN, 212);
-                                                        player->ADD_GOSSIP_ITEM(9, "Resguardo de vida", GOSSIP_SENDER_MAIN, 213);
-                                                        player->ADD_GOSSIP_ITEM(9, "Guardia Titan", GOSSIP_SENDER_MAIN, 214);
-                                                        player->ADD_GOSSIP_ITEM(9, "Potencia Superior", GOSSIP_SENDER_MAIN, 215);
-                                                        player->ADD_GOSSIP_ITEM(9, "Poder con Hechizos Poderoso", GOSSIP_SENDER_MAIN, 216);
-                                                        player->ADD_GOSSIP_ITEM(9, "Mangosta", GOSSIP_SENDER_MAIN, 217);
-                                                        player->ADD_GOSSIP_ITEM(9, "Verdugo", GOSSIP_SENDER_MAIN, 218);
-                                                        player->ADD_GOSSIP_ITEM(2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
+                                                        AddGossipItemFor(player, 9, "Amparo de hojas", GOSSIP_SENDER_MAIN, 205);
+                                                        AddGossipItemFor(player, 9, "Drenador de sangre", GOSSIP_SENDER_MAIN, 219);
+                                                        AddGossipItemFor(player, 9, "Agilidad Excepcional", GOSSIP_SENDER_MAIN, 206);
+                                                        AddGossipItemFor(player, 9, "Espiritu Excepcional", GOSSIP_SENDER_MAIN, 207);
+                                                        AddGossipItemFor(player, 9, "Rabia", GOSSIP_SENDER_MAIN, 208);
+                                                        AddGossipItemFor(player, 9, "Precision", GOSSIP_SENDER_MAIN, 209);
+                                                        AddGossipItemFor(player, 9, "Magia Negra", GOSSIP_SENDER_MAIN, 210);
+                                                        AddGossipItemFor(player, 9, "Maestro de Batalla", GOSSIP_SENDER_MAIN, 211);
+                                                        AddGossipItemFor(player, 9, "Rompehielo", GOSSIP_SENDER_MAIN, 212);
+                                                        AddGossipItemFor(player, 9, "Resguardo de vida", GOSSIP_SENDER_MAIN, 213);
+                                                        AddGossipItemFor(player, 9, "Guardia Titan", GOSSIP_SENDER_MAIN, 214);
+                                                        AddGossipItemFor(player, 9, "Potencia Superior", GOSSIP_SENDER_MAIN, 215);
+                                                        AddGossipItemFor(player, 9, "Poder con Hechizos Poderoso", GOSSIP_SENDER_MAIN, 216);
+                                                        AddGossipItemFor(player, 9, "Mangosta", GOSSIP_SENDER_MAIN, 217);
+                                                        AddGossipItemFor(player, 9, "Verdugo", GOSSIP_SENDER_MAIN, 218);
+                                                        AddGossipItemFor(player, 2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
                                                         player->PlayerTalkClass->SendGossipMenu(100002, creature->GetGUID());
                                                         return true;
                                                 }
@@ -462,28 +462,28 @@ public:
                                         break;
  
                                 case 14: //Remove enchant menu
-                                        player->ADD_GOSSIP_ITEM(7, "Remover encantamiento de la Mano Principal", GOSSIP_SENDER_MAIN, 400);
-                                        player->ADD_GOSSIP_ITEM(7, "Remover encantamiento de la Mano Secundaria", GOSSIP_SENDER_MAIN, 401);
-                                        player->ADD_GOSSIP_ITEM(7, "Remover encantamiento de Cabeza", GOSSIP_SENDER_MAIN, 402);
-                                        player->ADD_GOSSIP_ITEM(7, "Remover encantamiento de Hombreras", GOSSIP_SENDER_MAIN, 403);
-                                        player->ADD_GOSSIP_ITEM(7, "Remover encantamiento de Capa", GOSSIP_SENDER_MAIN, 404);
-                                        player->ADD_GOSSIP_ITEM(7, "Remover encantamiento de Pechera", GOSSIP_SENDER_MAIN, 405);
-                                        player->ADD_GOSSIP_ITEM(7, "Remover encantamiento de Brazales", GOSSIP_SENDER_MAIN, 406);
-                                        player->ADD_GOSSIP_ITEM(7, "Remover encantamiento de Guantes", GOSSIP_SENDER_MAIN, 407);
-                                        player->ADD_GOSSIP_ITEM(7, "Remover encantamiento de Piernas", GOSSIP_SENDER_MAIN, 408);
-                                        player->ADD_GOSSIP_ITEM(7, "Remover encantamiento de Botas", GOSSIP_SENDER_MAIN, 409);
-										player->ADD_GOSSIP_ITEM(7, "Remover encantamiento de Cinturon", GOSSIP_SENDER_MAIN, 411);
-                                        player->ADD_GOSSIP_ITEM(7, "Remover encantamiento de Anillos", GOSSIP_SENDER_MAIN, 410);
-										player->ADD_GOSSIP_ITEM(2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
+                                        AddGossipItemFor(player, 7, "Remover encantamiento de la Mano Principal", GOSSIP_SENDER_MAIN, 400);
+                                        AddGossipItemFor(player, 7, "Remover encantamiento de la Mano Secundaria", GOSSIP_SENDER_MAIN, 401);
+                                        AddGossipItemFor(player, 7, "Remover encantamiento de Cabeza", GOSSIP_SENDER_MAIN, 402);
+                                        AddGossipItemFor(player, 7, "Remover encantamiento de Hombreras", GOSSIP_SENDER_MAIN, 403);
+                                        AddGossipItemFor(player, 7, "Remover encantamiento de Capa", GOSSIP_SENDER_MAIN, 404);
+                                        AddGossipItemFor(player, 7, "Remover encantamiento de Pechera", GOSSIP_SENDER_MAIN, 405);
+                                        AddGossipItemFor(player, 7, "Remover encantamiento de Brazales", GOSSIP_SENDER_MAIN, 406);
+                                        AddGossipItemFor(player, 7, "Remover encantamiento de Guantes", GOSSIP_SENDER_MAIN, 407);
+                                        AddGossipItemFor(player, 7, "Remover encantamiento de Piernas", GOSSIP_SENDER_MAIN, 408);
+                                        AddGossipItemFor(player, 7, "Remover encantamiento de Botas", GOSSIP_SENDER_MAIN, 409);
+										AddGossipItemFor(player, 7, "Remover encantamiento de Cinturon", GOSSIP_SENDER_MAIN, 411);
+                                        AddGossipItemFor(player, 7, "Remover encantamiento de Anillos", GOSSIP_SENDER_MAIN, 410);
+										AddGossipItemFor(player, 2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
                                         player->PlayerTalkClass->SendGossipMenu(100014, creature->GetGUID());
                                         return true;
                                         break;
 										
 								//case 15: //Encantar cinturon
-                                        //player->ADD_GOSSIP_ITEM(9, "Hebilla eterna", GOSSIP_SENDER_MAIN, 420);
-                                        //player->ADD_GOSSIP_ITEM(9, "Granada de Fragmentacion", GOSSIP_SENDER_MAIN, 421);
-                                        //player->ADD_GOSSIP_ITEM(9, "Generador de Pulsos Electromagneticos", GOSSIP_SENDER_MAIN, 422);
-                                        //player->ADD_GOSSIP_ITEM(2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
+                                        //AddGossipItemFor(player, 9, "Hebilla eterna", GOSSIP_SENDER_MAIN, 420);
+                                        //AddGossipItemFor(player, 9, "Granada de Fragmentacion", GOSSIP_SENDER_MAIN, 421);
+                                        //AddGossipItemFor(player, 9, "Generador de Pulsos Electromagneticos", GOSSIP_SENDER_MAIN, 422);
+                                        //AddGossipItemFor(player, 2, "<- Volver al Menu Principal", GOSSIP_SENDER_MAIN, 300);
                                         //player->PlayerTalkClass->SendGossipMenu(100015, creature->GetGUID());
                                         //return true;
                                         //break;
@@ -1560,26 +1560,26 @@ public:
  
                                 case 300: //<-Back menu
                                         {
-                                                player->ADD_GOSSIP_ITEM(3, "Encantar Mano Principal", GOSSIP_SENDER_MAIN, 1);
-                                                player->ADD_GOSSIP_ITEM(3, "Encantar Mano Secundaria", GOSSIP_SENDER_MAIN, 13);
-                                                player->ADD_GOSSIP_ITEM(3, "Encantar Arma de Dos Manos", GOSSIP_SENDER_MAIN, 2);
-                                                player->ADD_GOSSIP_ITEM(3, "Encantar Escudo", GOSSIP_SENDER_MAIN, 3);
-                                                player->ADD_GOSSIP_ITEM(3, "Encantar Cabeza", GOSSIP_SENDER_MAIN, 4);
-                                                player->ADD_GOSSIP_ITEM(3, "Encantar Hombreras", GOSSIP_SENDER_MAIN, 5);
-                                                player->ADD_GOSSIP_ITEM(3, "Encantar Capa", GOSSIP_SENDER_MAIN, 6);
-                                                player->ADD_GOSSIP_ITEM(3, "Encantar Pechera", GOSSIP_SENDER_MAIN, 7);
-                                                player->ADD_GOSSIP_ITEM(3, "Encantar Brazales", GOSSIP_SENDER_MAIN, 8);
-                                                player->ADD_GOSSIP_ITEM(3, "Encantar Guantes", GOSSIP_SENDER_MAIN, 9);
-                                                player->ADD_GOSSIP_ITEM(3, "Encantar Piernas", GOSSIP_SENDER_MAIN, 10);
-                                                player->ADD_GOSSIP_ITEM(3, "Encantar Botas", GOSSIP_SENDER_MAIN, 11);
-												//player->ADD_GOSSIP_ITEM(3, "Encantar Cinturon", GOSSIP_SENDER_MAIN, 15);
+                                                AddGossipItemFor(player, 3, "Encantar Mano Principal", GOSSIP_SENDER_MAIN, 1);
+                                                AddGossipItemFor(player, 3, "Encantar Mano Secundaria", GOSSIP_SENDER_MAIN, 13);
+                                                AddGossipItemFor(player, 3, "Encantar Arma de Dos Manos", GOSSIP_SENDER_MAIN, 2);
+                                                AddGossipItemFor(player, 3, "Encantar Escudo", GOSSIP_SENDER_MAIN, 3);
+                                                AddGossipItemFor(player, 3, "Encantar Cabeza", GOSSIP_SENDER_MAIN, 4);
+                                                AddGossipItemFor(player, 3, "Encantar Hombreras", GOSSIP_SENDER_MAIN, 5);
+                                                AddGossipItemFor(player, 3, "Encantar Capa", GOSSIP_SENDER_MAIN, 6);
+                                                AddGossipItemFor(player, 3, "Encantar Pechera", GOSSIP_SENDER_MAIN, 7);
+                                                AddGossipItemFor(player, 3, "Encantar Brazales", GOSSIP_SENDER_MAIN, 8);
+                                                AddGossipItemFor(player, 3, "Encantar Guantes", GOSSIP_SENDER_MAIN, 9);
+                                                AddGossipItemFor(player, 3, "Encantar Piernas", GOSSIP_SENDER_MAIN, 10);
+                                                AddGossipItemFor(player, 3, "Encantar Botas", GOSSIP_SENDER_MAIN, 11);
+												//AddGossipItemFor(player, 3, "Encantar Cinturon", GOSSIP_SENDER_MAIN, 15);
  
                                                 if (player->HasSkill(SKILL_ENCHANTING) && player->GetSkillValue(SKILL_ENCHANTING) == 450)
                                                 {
-                                                        player->ADD_GOSSIP_ITEM(3, "Encantar Anillos", GOSSIP_SENDER_MAIN, 12);
+                                                        AddGossipItemFor(player, 3, "Encantar Anillos", GOSSIP_SENDER_MAIN, 12);
                                                 }
-                                                //player->ADD_GOSSIP_ITEM(5, "Deseo remover mi encantamiento", GOSSIP_SENDER_MAIN, 14);
-												player->ADD_GOSSIP_ITEM(2, "Olvidalo.", GOSSIP_SENDER_MAIN, 350);
+                                                //AddGossipItemFor(player, 5, "Deseo remover mi encantamiento", GOSSIP_SENDER_MAIN, 14);
+												AddGossipItemFor(player, 2, "Olvidalo.", GOSSIP_SENDER_MAIN, 350);
  
                                                 player->PlayerTalkClass->SendGossipMenu(100001, creature->GetGUID());
                                                 return true;
@@ -1587,7 +1587,7 @@ public:
                                                 break;
  
 								case 350: //Menu de Olvidalo
-										player->CLOSE_GOSSIP_MENU();
+										CloseGossipMenuFor(player);
 										break;
 										
                                 case 400: //Remove enchant for mainhand
