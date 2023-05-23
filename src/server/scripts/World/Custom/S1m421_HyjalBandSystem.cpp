@@ -10,19 +10,19 @@ public:
  
 	/*void OnUpdateZone(Player* player)
 	{
-		if(Player->isInZone(616)&& getfaction== alliance)
+		if(player->IsInMap()  == 616 && player->GetTeamId() == ALLIANCE)
 		{
-			uint32 playerGuid = player->GetGUID();
+			uint32 playerGuid = player->GetGUID().GetRawValue();
 			if(player->GetTeamId()==TEAM_ALLIANCE)
 			{
-				if(HyjalA->IsMember(playerGuid))
+				if(player->IsInSameGroupWith(playerGuid))
 				{
-					uint8 subgroup = HyjalA->GetMemberGroup(playerGuid);
+					uint8 subgroup = player->GetMemberGroup(playerGuid);
 					player->SetBattlegroundRaid(HyjalA, subgroup);
 				}
 				else
 				{
-					HyjalA->Create(player);
+					player->Create(player);
 					HyjalA->AddMember(player);
 					if (Group* originalGroup = player->GetOriginalGroup())
 						if (originalGroup->IsLeader(playerGuid))

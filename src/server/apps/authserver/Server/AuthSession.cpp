@@ -39,7 +39,6 @@
 #include <sstream>
 #include <iomanip>
 #include <boost/filesystem.hpp>
-
 using boost::asio::ip::tcp;
 
 enum eAuthCmd
@@ -131,11 +130,11 @@ std::unordered_map<uint8, AuthHandler> AuthSession::InitHandlers()
 {
     std::unordered_map<uint8, AuthHandler> handlers;
 
-    handlers[AUTH_LOGON_CHALLENGE] =        { STATUS_CHALLENGE,         AUTH_LOGON_CHALLENGE_INITIAL_SIZE, &AuthSession::HandleLogonChallenge };
-    handlers[AUTH_LOGON_PROOF] =            { STATUS_LOGON_PROOF,       sizeof(AUTH_LOGON_PROOF_C),        &AuthSession::HandleLogonProof };
-    handlers[AUTH_RECONNECT_CHALLENGE] =    { STATUS_CHALLENGE,         AUTH_LOGON_CHALLENGE_INITIAL_SIZE, &AuthSession::HandleReconnectChallenge };
-    handlers[AUTH_RECONNECT_PROOF] =        { STATUS_RECONNECT_PROOF,   sizeof(AUTH_RECONNECT_PROOF_C),    &AuthSession::HandleReconnectProof };
-    handlers[REALM_LIST] =                  { STATUS_AUTHED,            REALM_LIST_PACKET_SIZE,            &AuthSession::HandleRealmList };
+    handlers[AUTH_LOGON_CHALLENGE] = { STATUS_CHALLENGE,         AUTH_LOGON_CHALLENGE_INITIAL_SIZE, &AuthSession::HandleLogonChallenge };
+    handlers[AUTH_LOGON_PROOF] = { STATUS_LOGON_PROOF,       sizeof(AUTH_LOGON_PROOF_C),        &AuthSession::HandleLogonProof };
+    handlers[AUTH_RECONNECT_CHALLENGE] = { STATUS_CHALLENGE,         AUTH_LOGON_CHALLENGE_INITIAL_SIZE, &AuthSession::HandleReconnectChallenge };
+    handlers[AUTH_RECONNECT_PROOF] = { STATUS_RECONNECT_PROOF,   sizeof(AUTH_RECONNECT_PROOF_C),    &AuthSession::HandleReconnectProof };
+    handlers[REALM_LIST] = { STATUS_AUTHED,            REALM_LIST_PACKET_SIZE,            &AuthSession::HandleRealmList };
 
     return handlers;
 }
@@ -477,6 +476,19 @@ bool AuthSession::HandleLogonProof()
         return false;
     }
 
+    // Verificar archivos del cliente
+    if (!VerifyClientFiles())
+    {
+        ByteBuffer pkt;
+        pkt << uint8(AUTH_LOGON_CHALLENGE);
+        pkt << uint8(0x00);
+        pkt << uint8(WOW_FAIL_VERSION_INVALID);
+        SendPacket(pkt);
+        LOG_INFO("server.authserver", "Cliente Verificacion: %s", VerifyClientFiles() ? "Verificado" : "No verificado");
+
+        return true;
+    }
+
     // Check if SRP6 results match (password is correct), else send an error
     if (Optional<SessionKey> K = _srp6->VerifyChallengeResponse(logonProof->A, logonProof->clientM))
     {
@@ -627,6 +639,7 @@ bool AuthSession::HandleLogonProof()
 
 bool AuthSession::HandleReconnectChallenge()
 {
+   
     _status = STATUS_CLOSED;
 
     sAuthLogonChallenge_C* challenge = reinterpret_cast<sAuthLogonChallenge_C*>(GetReadBuffer().GetReadPointer());
@@ -660,8 +673,10 @@ bool AuthSession::HandleReconnectChallenge()
     return true;
 }
 
+
 void AuthSession::ReconnectChallengeCallback(PreparedQueryResult result)
 {
+    
     ByteBuffer pkt;
     pkt << uint8(AUTH_RECONNECT_CHALLENGE);
 
@@ -685,6 +700,71 @@ void AuthSession::ReconnectChallengeCallback(PreparedQueryResult result)
 
     SendPacket(pkt);
 }
+
+
+bool AuthSession::VerifyClientFiles()
+{
+    // Ruta del archivo del servidor
+    std::string serverFilePath = "CheckMd5Server.txt";
+
+    // Ruta del archivo del cliente
+    std::string clientFilePath = "CheckMd5Client.txt";
+
+    // Calcular el MD5 del archivo del servidor
+    std::string serverFileMD5 = CalculateFileMD5(serverFilePath);
+
+    // Calcular el MD5 del archivo del cliente
+    std::string clientFileMD5 = CalculateFileMD5(clientFilePath);
+
+    // Comparar los MD5
+    return (serverFileMD5 == clientFileMD5);
+}
+
+std::string AuthSession::CalculateFileMD5(const std::string& filePath)
+{
+    std::ifstream file(filePath, std::ios::binary);
+    if (!file)
+    {
+        // No se puede abrir el archivo
+        return "";
+    }
+
+    // Calcular el MD5 del archivo
+    MD5_CTX md5Context;
+    MD5_Init(&md5Context);
+
+    constexpr size_t bufferSize = 4096;
+    char buffer[bufferSize];
+    while (file.read(buffer, bufferSize))
+    {
+        MD5_Update(&md5Context, buffer, bufferSize);
+    }
+
+    if (file.gcount() > 0)
+    {
+        MD5_Update(&md5Context, buffer, file.gcount());
+    }
+
+    unsigned char md5Digest[MD5_DIGEST_LENGTH];
+    MD5_Final(md5Digest, &md5Context);
+
+    // Convertir el resultado del MD5 a una cadena hexadecimal
+    std::ostringstream md5Stream;
+    md5Stream << std::hex << std::setfill('0');
+    for (unsigned char c : md5Digest)
+    {
+        md5Stream << std::setw(2) << static_cast<unsigned>(c);
+    }
+
+    return md5Stream.str();
+}
+
+
+
+
+
+
+
 
 bool AuthSession::HandleReconnectProof()
 {
@@ -848,126 +928,6 @@ void AuthSession::RealmListCallback(PreparedQueryResult result)
     _status = STATUS_AUTHED;
 }
 
-bool AuthSession::VerifyClientFiles()
-{
-    // Obtener la ruta de la carpeta del cliente
-    std::string clientFolderPath = sConfigMgr->GetOption<std::string>("ClientFolderPath", "");
-
-    // Obtener la lista de archivos registrados en el servidor con sus firmas MD5
-    std::map<std::string, std::string> serverFileList = GetServerFileList();
-
-    // Obtener una lista de archivos en la carpeta del cliente
-    boost::filesystem::path clientFolder(clientFolderPath);
-    boost::filesystem::directory_iterator iter(clientFolder);
-    boost::filesystem::directory_iterator end;
-
-    // Recorrer los archivos en la carpeta del cliente
-    for (; iter != end; ++iter)
-    {
-        if (boost::filesystem::is_regular_file(*iter))
-        {
-            std::string filePath = iter->path().string();
-            std::string fileName = iter->path().filename().string();
-
-            // Verificar si el archivo está registrado en el servidor
-            auto serverFileEntry = serverFileList.find(fileName);
-            if (serverFileEntry == serverFileList.end())
-            {
-                // El archivo no está registrado en el servidor
-                return false;
-            }
-
-            // Calcular la firma MD5 del archivo del cliente
-            std::string clientFileMD5 = CalculateMD5(filePath);
-
-            // Verificar si la firma MD5 coincide
-            if (clientFileMD5 != serverFileEntry->second)
-            {
-                // La firma MD5 no coincide
-                return false;
-            }
-        }
-    }
-
-    // Todos los archivos verificados son válidos
-    return true;
-}
-
-std::map<std::string, std::string> AuthSession::GetServerFileList()
-{
-    std::map<std::string, std::string> serverFileList;
-
-    // Ruta y nombre de archivo donde se almacenará la lista de archivos y sus firmas MD5
-    std::string serverFileListPath = "ruta_del_archivo/server_file_list.txt";
-
-    // Abrir el archivo en modo lectura
-    std::ifstream file(serverFileListPath);
-    if (file.is_open())
-    {
-        std::string line;
-        while (std::getline(file, line))
-        {
-            // Separar el nombre del archivo y la firma MD5 utilizando un separador, como un espacio o una coma
-            std::istringstream iss(line);
-            std::string fileName;
-            std::string md5;
-            if (std::getline(iss, fileName, ',') && std::getline(iss, md5))
-            {
-                // Agregar el nombre del archivo y la firma MD5 al mapa
-                serverFileList[fileName] = md5;
-            }
-        }
-
-        // Cerrar el archivo
-        file.close();
-    }
-
-    return serverFileList;
-}
-
-
-std::string AuthSession::CalculateMD5(const std::string& filePath)
-{
-    std::ifstream file(filePath, std::ios::binary);
-
-    if (!file)
-    {
-        // Manejar el caso de error al abrir el archivo
-        return "";
-    }
-
-    // Crear el objeto de contexto MD5
-    MD5_CTX md5Context;
-    MD5_Init(&md5Context);
-
-    constexpr size_t bufferSize = 4096;
-    char buffer[bufferSize];
-
-    // Leer el archivo en bloques y actualizar el contexto MD5
-    while (file.read(buffer, bufferSize))
-    {
-        MD5_Update(&md5Context, buffer, bufferSize);
-    }
-
-    // Leer los bytes restantes del archivo y actualizar el contexto MD5
-    MD5_Update(&md5Context, buffer, file.gcount());
-
-    // Finalizar el cálculo de la firma MD5
-    unsigned char digest[MD5_DIGEST_LENGTH];
-    MD5_Final(digest, &md5Context);
-
-    std::stringstream ss;
-    ss << std::hex << std::setfill('0');
-
-    // Convertir el digest en una cadena hexadecimal
-    for (unsigned char byte : digest)
-    {
-        ss << std::setw(2) << static_cast<int>(byte);
-    }
-
-    return ss.str();
-}
-
 bool AuthSession::VerifyVersion(uint8 const* a, int32 aLength, Acore::Crypto::SHA1::Digest const& versionProof, bool isReconnect)
 {
     if (!sConfigMgr->GetOption<bool>("StrictVersionCheck", false))
@@ -976,15 +936,10 @@ bool AuthSession::VerifyVersion(uint8 const* a, int32 aLength, Acore::Crypto::SH
     Acore::Crypto::SHA1::Digest zeros{};
     Acore::Crypto::SHA1::Digest const* versionHash{ nullptr };
 
+
     if (!isReconnect)
     {
-        if (!VerifyClientFiles())
-        {
-            ByteBuffer pkt;
-            pkt << uint8(WOW_FAIL_VERSION_INVALID);
-            SendPacket(pkt);
-            return false;
-        }
+  
         RealmBuildInfo const* buildInfo = sRealmList->GetBuildInfo(_build);
         if (!buildInfo)
             return false;

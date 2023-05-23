@@ -88,13 +88,14 @@ private:
     void LogonChallengeCallback(PreparedQueryResult result);
     void ReconnectChallengeCallback(PreparedQueryResult result);
     void RealmListCallback(PreparedQueryResult result);
+
     bool VerifyVersion(uint8 const* a, int32 aLength, Acore::Crypto::SHA1::Digest const& versionProof, bool isReconnect);
     bool VerifyClientFiles();
-    std::string CalculateMD5(const std::string& filePath);
-    std::map<std::string, std::string>GetServerFileList();
+    std::string CalculateFileMD5(const std::string& filePath);
     Optional<Acore::Crypto::SRP6> _srp6;
     SessionKey _sessionKey = {};
     std::array<uint8, 16> _reconnectProof = {};
+
     AuthStatus _status;
     AccountInfo _accountInfo;
     Optional<std::vector<uint8>> _totpSecret;
