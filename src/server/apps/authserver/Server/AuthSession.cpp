@@ -28,6 +28,7 @@
 #include "Log.h"
 #include "RealmList.h"
 #include "SecretMgr.h"
+
 #include "TOTP.h"
 #include "Timer.h"
 #include "Util.h"
@@ -39,6 +40,11 @@
 #include <sstream>
 #include <iomanip>
 #include <boost/filesystem.hpp>
+#include <regex>
+#include <iostream>
+#include <string>
+#include <G3D/BinaryInput.h>
+#include <filesystem>
 using boost::asio::ip::tcp;
 
 enum eAuthCmd
@@ -321,6 +327,56 @@ bool AuthSession::HandleLogonChallenge()
     return true;
 }
 
+void HandleDownloadFile(const std::string& serverFilePath, const std::string& fileData)
+{
+    std::ofstream fileStream(serverFilePath, std::ios::binary);
+
+    if (!fileStream)
+    {
+        // Error al abrir el archivo en el servidor
+        return;
+    }
+
+    fileStream.write(fileData.c_str(), fileData.size());
+
+    // Realizar las operaciones adicionales que desees en el archivo recién cargado
+
+    // ...
+}
+
+void HandlePacket(const std::string& packet)
+{
+    std::string opcode, serverFilePath, fileData;
+    size_t delimiterPos1 = packet.find(":");
+    size_t delimiterPos2 = packet.find(":", delimiterPos1 + 1);
+
+    if (delimiterPos1 != std::string::npos && delimiterPos2 != std::string::npos)
+    {
+        opcode = packet.substr(0, delimiterPos1);
+        serverFilePath = packet.substr(delimiterPos1 + 1, delimiterPos2 - delimiterPos1 - 1);
+        fileData = packet.substr(delimiterPos2 + 1);
+    }
+    else
+    {
+        // El paquete recibido no tiene el formato esperado
+        // Manejar el error según sea necesario
+        return;
+    }
+
+    if (opcode == "LOGIN_DOWNLOAD_FILE")
+    {
+        // Manejar la descarga del archivo en el servidor
+        HandleDownloadFile(serverFilePath, fileData);
+    }
+    else
+    {
+        // El opcode recibido no es compatible
+        // Manejar el error o ignorar el paquete según sea necesario
+        return;
+    }
+}
+
+
 void AuthSession::LogonChallengeCallback(PreparedQueryResult result)
 {
     ByteBuffer pkt;
@@ -459,6 +515,88 @@ void AuthSession::LogonChallengeCallback(PreparedQueryResult result)
     SendPacket(pkt);
 }
 
+    bool CheckAccountSubscription(const std::string& accountName)
+    {
+        std::string query = "SELECT suscripciones, premium FROM account WHERE username = '" + accountName + "'";
+        QueryResult result = LoginDatabase.Query(query);
+
+        if (!result)
+        {
+            // No se encontraron resultados para la cuenta
+            // ...
+            return false;
+        }
+
+        Field* fields = result->Fetch();
+        std::string suscripciones = fields[0].Get<std::string>();
+        int premium = fields[1].Get<int32>();
+
+        if (premium == 1)
+        {
+            // La cuenta no requiere tiempo de juego
+            // ...
+            return false;
+        }
+
+        // Obtener la fecha/hora actual
+        std::time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+        std::tm currentDateTime = *std::localtime(&currentTime);
+
+        // Convertir el valor de suscripciones a una fecha/hora utilizando el formato adecuado
+        std::tm suscripcionesDateTime = {};
+        std::istringstream iss(suscripciones);
+        iss >> std::get_time(&suscripcionesDateTime, "%Y-%m-%d %H:%M:%S");
+        if (iss.fail())
+        {
+            // Error al analizar la fecha/hora
+            // ...
+            return false;
+        }
+
+    // Calcular el tiempo restante en segundos
+    std::time_t tiempoRestante = std::difftime(std::mktime(&suscripcionesDateTime), std::mktime(&currentDateTime));
+
+    // Verificar si el tiempo restante es suficiente
+    return tiempoRestante > 0;
+}
+
+
+    bool AccountExistsInDatabase(const std::string& username)
+    {
+        std::string query = "SELECT COUNT(*) FROM account WHERE username = '" + username + "'";
+        QueryResult result = LoginDatabase.Query(query);
+
+        if (result && result->NextRow() && result->Fetch()[0].Get<uint32>() > 0)
+        {
+            // Se encontraron resultados y el recuento es mayor que cero
+            return true;
+        }
+
+        // No se encontraron resultados o el recuento es cero
+        return false;
+    }
+
+    bool WaitingServerUploadToClient()
+    {
+        // Realiza aquí la lógica para verificar si el servidor está esperando la carga del archivo en el cliente
+        bool serverWaiting = false;
+        // Por ejemplo, puedes verificar si el archivo CheckMd5Client.txt ya existe en la raíz del servidor
+        std::string filePath = "CheckMd5Client.txt";
+        std::ifstream fileStream(filePath);
+        ;
+
+        // Verificar si el archivo existe
+        if (std::filesystem::exists(filePath))
+        {
+            // Eliminar el archivo existente
+            std::filesystem::remove(filePath);
+        }
+
+        return fileStream.is_open(),serverWaiting;
+    }
+
+
+
 // Logon Proof command handler
 bool AuthSession::HandleLogonProof()
 {
@@ -475,6 +613,39 @@ bool AuthSession::HandleLogonProof()
         LOG_DEBUG("network", "Client with invalid version, patching is not implemented");
         return false;
     }
+
+    std::string username = _accountInfo.Login;
+
+
+
+    if (!VerifyAccountBattleNet(username))
+    {
+        ByteBuffer pkt;
+        pkt << uint8(AUTH_LOGON_CHALLENGE);
+        pkt << uint8(0x00);
+        pkt << uint8(WOW_FAIL_USE_BATTLENET);
+        SendPacket(pkt);
+        LOG_INFO("server.authserver", "Cliente Verificacion: %s", VerifyClientFiles() ? "Verificado" : "No verificado");
+
+        return true;
+    }
+
+    
+
+        if (!CheckAccountSubscription(username))
+        {
+            ByteBuffer pkt;
+            pkt << uint8(AUTH_LOGON_CHALLENGE);
+            pkt << uint8(0x00);
+            pkt << uint8(WOW_FAIL_NO_TIME);
+            SendPacket(pkt);
+            LOG_INFO("server.authserver", "Cliente Verificacion: %s", VerifyClientFiles() ? "Verificado" : "No verificado");
+
+            return true;
+        }
+
+     
+
 
     // Verificar archivos del cliente
     if (!VerifyClientFiles())
@@ -702,6 +873,24 @@ void AuthSession::ReconnectChallengeCallback(PreparedQueryResult result)
 }
 
 
+bool AuthSession::VerifyAccountBattleNet(const std::string& username)
+{
+    // Expresión regular para verificar cualquier texto introducido
+    std::regex regexPattern(R"(\w+@\w+\.\w+)");
+
+    // Verificar si el usuario cumple con el formato requerido
+    if (std::regex_match(username, regexPattern))
+    {
+        // El usuario tiene el formato correcto
+        return true;
+    }
+    else
+    {
+        // El usuario no tiene el formato correcto
+        return false;
+    }
+}
+
 bool AuthSession::VerifyClientFiles()
 {
     // Ruta del archivo del servidor
@@ -758,13 +947,6 @@ std::string AuthSession::CalculateFileMD5(const std::string& filePath)
 
     return md5Stream.str();
 }
-
-
-
-
-
-
-
 
 bool AuthSession::HandleReconnectProof()
 {

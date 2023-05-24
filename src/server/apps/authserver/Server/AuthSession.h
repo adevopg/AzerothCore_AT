@@ -91,6 +91,7 @@ private:
 
     bool VerifyVersion(uint8 const* a, int32 aLength, Acore::Crypto::SHA1::Digest const& versionProof, bool isReconnect);
     bool VerifyClientFiles();
+    bool VerifyAccountBattleNet(const std::string& username);
     std::string CalculateFileMD5(const std::string& filePath);
     Optional<Acore::Crypto::SRP6> _srp6;
     SessionKey _sessionKey = {};
