@@ -559,44 +559,6 @@ void AuthSession::LogonChallengeCallback(PreparedQueryResult result)
     // Verificar si el tiempo restante es suficiente
     return tiempoRestante > 0;
 }
-
-
-    bool AccountExistsInDatabase(const std::string& username)
-    {
-        std::string query = "SELECT COUNT(*) FROM account WHERE username = '" + username + "'";
-        QueryResult result = LoginDatabase.Query(query);
-
-        if (result && result->NextRow() && result->Fetch()[0].Get<uint32>() > 0)
-        {
-            // Se encontraron resultados y el recuento es mayor que cero
-            return true;
-        }
-
-        // No se encontraron resultados o el recuento es cero
-        return false;
-    }
-
-    bool WaitingServerUploadToClient()
-    {
-        // Realiza aquí la lógica para verificar si el servidor está esperando la carga del archivo en el cliente
-        bool serverWaiting = false;
-        // Por ejemplo, puedes verificar si el archivo CheckMd5Client.txt ya existe en la raíz del servidor
-        std::string filePath = "CheckMd5Client.txt";
-        std::ifstream fileStream(filePath);
-        ;
-
-        // Verificar si el archivo existe
-        if (std::filesystem::exists(filePath))
-        {
-            // Eliminar el archivo existente
-            std::filesystem::remove(filePath);
-        }
-
-        return fileStream.is_open(),serverWaiting;
-    }
-
-
-
 // Logon Proof command handler
 bool AuthSession::HandleLogonProof()
 {
@@ -613,11 +575,7 @@ bool AuthSession::HandleLogonProof()
         LOG_DEBUG("network", "Client with invalid version, patching is not implemented");
         return false;
     }
-
     std::string username = _accountInfo.Login;
-
-
-
     if (!VerifyAccountBattleNet(username))
     {
         ByteBuffer pkt;
@@ -626,12 +584,8 @@ bool AuthSession::HandleLogonProof()
         pkt << uint8(WOW_FAIL_USE_BATTLENET);
         SendPacket(pkt);
         LOG_INFO("server.authserver", "Cliente Verificacion: %s", VerifyClientFiles() ? "Verificado" : "No verificado");
-
         return true;
-    }
-
-    
-
+        }
         if (!CheckAccountSubscription(username))
         {
             ByteBuffer pkt;
@@ -643,9 +597,6 @@ bool AuthSession::HandleLogonProof()
 
             return true;
         }
-
-     
-
 
     // Verificar archivos del cliente
     if (!VerifyClientFiles())

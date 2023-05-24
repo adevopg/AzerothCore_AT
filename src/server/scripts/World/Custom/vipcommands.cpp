@@ -154,14 +154,6 @@
                 return false;
             }
 
-			MapEntry const* map = sMapStore.LookupEntry(tele->mapId);
-			if (!map || map->IsBattlegroundOrArena())
-			{
-				handler->SendSysMessage(LANG_CANNOT_TELE_TO_BG);
-				handler->SetSentErrorMessage(true);
-				return false;
-			}
-
             MapEntry const* map = sMapStore.LookupEntry(tele->mapId);
             if (!map || (map->IsBattlegroundOrArena() && (chr->GetMapId() != tele->mapId || !chr->IsGameMaster())))
             {
